@@ -1,3 +1,3 @@
 # TDACPP
  	
-A class for interacting with TD Ameritrades API
+A class for interacting with TD Ameritrade's API
