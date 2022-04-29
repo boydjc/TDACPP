@@ -3,7 +3,17 @@
 
 TDA::TDA() {	
 	std::cout << "TDA!" << std::endl;
-	testLibCurl();
+
+	// get the refresh token from environ variable
+	if(std::getenv("TDA_REFRESH")){
+		std::cout << "REFRESH TOKEN FOUND!" << std::endl;
+		std::cout << std::getenv("TDA_REFRESH") << std::endl;
+	} else {
+		std::cout << "ERROR! Could not find refresh token." << std::endl;
+		std::cout << "Please make sure your refresh token is stored in an env variable named \"TDA_REFRESH\"" << std::endl;
+	}
+
+	//testLibCurl();
 }
 
 void TDA::testLibCurl(){
