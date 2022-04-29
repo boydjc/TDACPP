@@ -4,9 +4,23 @@
 TDA::TDA() {	
 	std::cout << "TDA!" << std::endl;
 
-	// set upi libcurl
+	// set up libcurl
 	curl_global_init(CURL_GLOBAL_DEFAULT);
 
+	readEnvVars();	
+
+	//testLibCurl();
+}
+
+TDA::~TDA() {
+	// clean up libcurl
+	curl_global_cleanup();
+	std::cout << "TDA DECONSTRUCTOR" << std::endl;
+}
+
+// Retrieves the values for the refresh, access tokens, and the client id
+// through environment variables on the system
+void TDA::readEnvVars() {
 	// get the refresh token from environ variable
 	if(std::getenv("TDA_REFRESH")){
 		refreshToken = std::getenv("TDA_REFRESH");
@@ -15,7 +29,7 @@ TDA::TDA() {
 		std::cout << "Please make sure your refresh token is stored in an env variable named \"TDA_REFRESH\"" << std::endl;
 	}
 
-
+	// get the access token from environ variable
 	if(std::getenv("TDA_ACCESS")) {
 		accessToken = std::getenv("TDA_ACCESS");
 	} else {
@@ -23,13 +37,14 @@ TDA::TDA() {
 		std::cout << "Please make sure your access token is stored in an env variable named \"TDA_ACCESS\"" << std::endl;
 	}
 
-	testLibCurl();
-}
+	// get the client id from environ variable
+	if(std::getenv("TDA_CLIENT")) {
+		clientId = std::getenv("TDA_CLIENT");
+	} else {
+		std::cout << "ERROR! Could not find client id." << std::endl;
+		std::cout << "Please make sure your client id is stored in an env variable named \"TDA_CLIENT\"" << std::endl;
+	}
 
-TDA::~TDA() {
-	// clean up libcurl
-	curl_global_cleanup();
-	std::cout << "DECONSTRUCTOR" << std::endl;
 }
 
 void TDA::testLibCurl(){
@@ -78,5 +93,9 @@ size_t TDA::saveLibCurlRes(void *buffer, size_t size, size_t nmemb, std::string 
 
 void TDA::createAccessToken() {
 
+	reqUrl = "https://api.tdameritrade.com/v1/oauth2/token";
+
+
+	
 }
 
