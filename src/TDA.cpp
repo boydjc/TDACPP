@@ -13,6 +13,15 @@ TDA::TDA() {
 		std::cout << "Please make sure your refresh token is stored in an env variable named \"TDA_REFRESH\"" << std::endl;
 	}
 
+
+	if(std::getenv("TDA_ACCESS")) {
+		std::cout << "ACCESS TOKEN FOUND!" << std::endl;
+		std::cout << std::getenv("TDA_ACCESS") << std::endl;
+	} else {
+		std::cout << "ERROR! Could not find access token." << std::endl;
+		std::cout << "Please make sure your access token is stored in an env variable named \"TDA_ACCESS\"" << std::endl;
+	}
+
 	//testLibCurl();
 }
 
