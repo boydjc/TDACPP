@@ -6,6 +6,7 @@ class TDA {
 
 	public:
 		TDA();
+		~TDA();
 
 	private:
 		CURL *curl;
@@ -22,9 +23,10 @@ class TDA {
 
 		// This is the variable that curl will use to write the request 
 		// html results to using CURLOPT_WRITEDATA	
-		char* resResults;
+		std::string resResults;
 
 		void testLibCurl();
 		static size_t saveLibCurlRes(void *buffer, size_t size, size_t nmemb, std::string *s);
+		void createAccessToken();
 		
 };
