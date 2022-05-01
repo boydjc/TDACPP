@@ -4,11 +4,18 @@ A class for interacting with TD Ameritrades API
 
 ## Dev Notes
 
-- API refresh token needs to be stored in an environment variable named TDA_REFRESH
-- The refresh token does not need to be encoded before storing in env var. The
+- API refresh token and client id need to be stored in a file named config.json in the parent directory. The file needs to look like the following:
+
+```
+{
+  "refresh_token": "Ucy8sYKEZhcpTRqQGgi6LNY1uzplV2iwHl42rkcjlGnkbMIm4Q0Ihc05NrZZFmNhm2js67E6m72qpoGND6sKQ9aOqYSIZxpa5KaFG8FBVhomst48Ztq70yaRDJ8PlJNd0Z4i0WUslJXAURV2Fat7QtCNfG7CysOFdidNO0Cnhvpf513VGsvEB9s0PQX7glo2s7LtH79Hc0S4u5A7FoTT2ozgnUiLTR91jeRsHydTH6vCb1R1f2ovo4mLWzf4Pj3HZIAvfrrA9tpRmyAQpba270gMmbOqU4kQn8XckbIU19P2GZFU3spWNRgJobx2biqMEgVM8fVVNsQ2Nd406ZiJN3F4eAjw7V2v8u7PDHkoaRxGpw8abVpJiAj3bsNeQMV69M5YvzurUKEFhiCpmB7f8vRkNLBxreHEGKUtV0iqdJ6TkjUsHccYwOOZSvzkFgJk1xviLhsff6k3zXXkzYVq1qolTszQ9GYwDgieebQPuXr4WdnfBbrtFqaKhPoLTOGt87LOgm0l610ikmhqKF71arOfTeMjWoi8BvbM4oUwmMNIYGFzsNxJ3lyvd8GNo3bCAvBc5trKmr8mzurYXwNlcktHXiRjMA4HuVrZY0aSwgE8d3XNAICtQVUW8Cu2s1945bEFoY2xqfzLIfayHdf6y2ZqJoZyj3QrKypnh1Vi8shc8ULoUUdPiDZSGE8y1SycOVhio0OAhsoz1zWv8KVaO8r4jZSdJ405zTYt5GelO31NwAaQ0XNr18IqxQszqROjAJzHjkr8URhGie01ERY1olfGSRjwAvEwSDNprVN8fdnLZJgq5eHIvRjDtB0Mrxjov3YEosFS10nQrQXLqub5LtCvYrqgEZjJXxVcsNNmg1WKmBjDtzGeXa9e5D3EGoTSFP61
+TnN0ZCSFaWmnisYfRAYj",
+
+  "client_id": "CNLSNSEQHSWSGTEINUKLCNLSNSE"
+}
+
+```
+
+- The refresh token does not need to be encoded before storing in config.json. The
 	class will encode it for you before sending requests
-- The client ID of the developer app used to access the API should be stored in an environment
-  variable named TDA_CLIENT
-- If you have an access token already you can store it in the env var TDA_ACCESS
-	However, it's not really needed. If your TDA_REFESH and TDA_CLIENT are valid
-	then the class will reach out for a new access token if it doesn't find one.
+
