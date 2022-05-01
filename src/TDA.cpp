@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include "../include/TDA.h"
+#include "../include/json.hpp"
 
 TDA::TDA() {	
 	std::cout << "TDA!" << std::endl;
@@ -48,7 +49,7 @@ void TDA::readEnvVars() {
 
 }
 
-int TDA::sendReq(){
+void TDA::sendReq(){
 	std::cout << "Initializing curl" << std::endl;
 
 	int reqStatus = 0;
@@ -96,8 +97,6 @@ int TDA::sendReq(){
 		std::cout << "Cleaning up" << std::endl;
 		curl_easy_cleanup(curl);
 	}
-	
-	return reqStatus;
 }
 
 /*  Call back function for libcurl to save our requested data
@@ -130,13 +129,17 @@ void TDA::createAccessToken() {
 
 	curl_easy_cleanup(curl);
 
-	int reqStatus = sendReq();
+	sendReq();
 
-	if(reqStatus == 0) {
+	// parse the request results into JSON object
+	nlohmann::json resJSON = nlohmann::json::parse(resResults);
+
+	if(resJSON.contains("access_token")) {
 		std::cout << "SUCCESS" << std::endl;
-		std::cout << "New Access Token: " << resResults << std::endl;
-	} else {
-		std::cout << "Access Token Request Failed" << std::endl;
+		std::cout << resJSON["access_token"] << std::endl;
+	} else if(resJSON.contains("error")) {
+		std::cout << "ERROR in fetching new Access Token" << std::endl;
+		std::cout << resJSON["error"] << std::endl;
 	}
 	
 }
