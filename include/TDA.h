@@ -34,7 +34,7 @@ class TDA {
 		std::string postData;
 
 		void readEnvVars();
-		int sendReq();
+		void sendReq();
 		static size_t saveLibCurlRes(void *buffer, size_t size, size_t nmemb, std::string *s);
 		void createAccessToken();
 		
