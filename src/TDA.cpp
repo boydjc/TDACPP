@@ -13,6 +13,8 @@ TDA::TDA() {
 	readConfig();	
 
 	createAccessToken();
+
+	saveConfig();
 }
 
 TDA::~TDA() {
@@ -106,6 +108,12 @@ size_t TDA::saveLibCurlRes(void *buffer, size_t size, size_t nmemb, std::string 
 	return dataLen;
 }
 
+void TDA::saveConfig() {
+	std::cout << configJSON.dump() << std::endl;
+	std::ofstream configFile("../config.json", std::ios::trunc);
+	configFile << configJSON.dump();
+	configFile.close();
+}
 
 void TDA::createAccessToken() {
 
