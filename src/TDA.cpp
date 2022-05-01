@@ -1,7 +1,8 @@
 #include <iostream>
 #include <cstdlib>
+#include <fstream>
+
 #include "../include/TDA.h"
-#include "../include/json.hpp"
 
 TDA::TDA() {	
 	std::cout << "TDA!" << std::endl;
@@ -9,9 +10,9 @@ TDA::TDA() {
 	// set up libcurl
 	curl_global_init(CURL_GLOBAL_DEFAULT);
 
-	readEnvVars();	
+	readConfig();	
 
-	//createAccessToken();
+	createAccessToken();
 }
 
 TDA::~TDA() {
@@ -19,42 +20,24 @@ TDA::~TDA() {
 	curl_global_cleanup();
 }
 
-// Retrieves the values for the refresh, access tokens, and the client id
-// through environment variables on the system
-void TDA::readEnvVars() {
+// Retrieves values like refresh token and client id through config.json
+void TDA::readConfig() {
+
+	std::ifstream configFile("../config.json");
+	configFile >> configJSON;
+	configFile.close();
+
 	// get the refresh token from environ variable
-	if(std::getenv("TDA_REFRESH")){
-		refreshToken = getenv("TDA_REFRESH");
-	} else {
+	if(!(configJSON.contains("refresh_token"))){
 		std::cout << "ERROR! Could not find refresh token." << std::endl;
-		std::cout << "Please make sure your refresh token is stored in an env variable named \"TDA_REFRESH\"" << std::endl;
+		std::cout << "Please make sure your refresh token is in your config.json file" << std::endl;
 	}
 
 	// get the client id from environ variable
-	if(std::getenv("TDA_CLIENT")) {
-		clientId = getenv("TDA_CLIENT");
-	} else {
+	if(!(configJSON.contains("client_id"))) {
 		std::cout << "ERROR! Could not find client id." << std::endl;
-		std::cout << "Please make sure your client id is stored in an env variable named \"TDA_CLIENT\"" << std::endl;
+		std::cout << "Please make sure your client id is in your config.json file" << std::endl;
 	}
-
-	// get the access token from environ variable
-	if(std::getenv("TDA_ACCESS")) {
-		accessToken = getenv("TDA_ACCESS");
-	} else {
-		// try to get a new access token if the refresh token is available
-		if(std::getenv("TDA_REFRESH")) {
-			std::cout << "No Access Token found in env vars" << std::endl;
-			std::cout << "Attempting to create one..." << std::endl;
-			createAccessToken();
-			if(std::getenv("TDA_ACCESS")) {
-				std::cout << "Successfully created Access Token using Refresh Token" << std::endl;
-			}else {
-				std::cout << "ERROR: Could not create access token with refresh token" << std::endl;
-			}
-		}
-	}
-
 }
 
 void TDA::sendReq(){
@@ -131,9 +114,11 @@ void TDA::createAccessToken() {
 	// using curl here to encode the refresh token
 	curl = curl_easy_init();
 
-	std::string refreshEncode = curl_easy_escape(curl, refreshToken.c_str(), refreshToken.length());
+	std::string refreshEncode = curl_easy_escape(curl, 
+												 configJSON["refresh_token"].get<std::string>().c_str(), 
+												 configJSON["refresh_token"].get<std::string>().length());
 
-	postData = "grant_type=refresh_token&refresh_token=" + refreshEncode + "&access_type=&code=&client_id=" + clientId + "&redirect_uri=";
+	postData = "grant_type=refresh_token&refresh_token=" + refreshEncode + "&access_type=&code=&client_id=" + configJSON["client_id"].get<std::string>() + "&redirect_uri=";
 
 	curl_easy_cleanup(curl);
 
@@ -147,9 +132,8 @@ void TDA::createAccessToken() {
 	nlohmann::json resJSON = nlohmann::json::parse(resResults);
 
 	if(resJSON.contains("access_token")) {
-		// store the access token in env var
-		setenv("TDA_ACCESS", resJSON["access_token"].get<std::string>().c_str(), true);
-		accessToken = getenv("TDA_ACCESS");
+		// store the access token in configJSON
+		configJSON["access_token"] = resJSON["access_token"].get<std::string>();
 	} else if(resJSON.contains("error")) {
 		std::cout << "ERROR in fetching new Access Token" << std::endl;
 		std::cout << resJSON["error"] << std::endl;
