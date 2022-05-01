@@ -121,7 +121,14 @@ void TDA::createAccessToken() {
 
 	reqUrl = "https://api.tdameritrade.com/v1/oauth2/token";
 
-	postData = "grant_type=refresh_token&refresh_token=" + refreshToken + "&access_type=&code=&client_id=" + clientId + "&redirect_uri=";
+	// using curl here to encode the refresh token
+	curl = curl_easy_init();
+
+	std::string refreshEncode = curl_easy_escape(curl, refreshToken.c_str(), refreshToken.length());
+
+	postData = "grant_type=refresh_token&refresh_token=" + refreshEncode + "&access_type=&code=&client_id=" + clientId + "&redirect_uri=";
+
+	curl_easy_cleanup(curl);
 
 	int reqStatus = sendReq();
 
