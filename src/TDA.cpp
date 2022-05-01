@@ -32,13 +32,13 @@ void TDA::readConfig() {
 	// get the refresh token from environ variable
 	if(!(configJSON.contains("refresh_token"))){
 		std::cout << "ERROR! Could not find refresh token." << std::endl;
-		std::cout << "Please make sure your refresh token is in your config.json file" << std::endl;
+		std::cout << "Please make sure your refresh token is in your config.json file!" << std::endl;
 	}
 
 	// get the client id from environ variable
 	if(!(configJSON.contains("client_id"))) {
 		std::cout << "ERROR! Could not find client id." << std::endl;
-		std::cout << "Please make sure your client id is in your config.json file" << std::endl;
+		std::cout << "Please make sure your client id is in your config.json file!" << std::endl;
 	}
 }
 
@@ -81,10 +81,7 @@ void TDA::sendReq(){
 		/* Check for errors */
 		if(res != CURLE_OK) {
 			fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
-			reqStatus = 1;
 		}
-
-		std::cout << "REQUEST RESULT: " << res << std::endl;
 
 		/* always clean up */
 		std::cout << "Cleaning up" << std::endl;
@@ -115,7 +112,7 @@ void TDA::saveConfig() {
 	configFile.close();
 }
 
-void TDA::createAccessToken() {
+void TDA::createAccessToken(bool refresh) {
 
 	reqUrl = "https://api.tdameritrade.com/v1/oauth2/token";
 
@@ -125,8 +122,18 @@ void TDA::createAccessToken() {
 	std::string refreshEncode = curl_easy_escape(curl, 
 												 configJSON["refresh_token"].get<std::string>().c_str(), 
 												 configJSON["refresh_token"].get<std::string>().length());
-
-	postData = "grant_type=refresh_token&refresh_token=" + refreshEncode + "&access_type=&code=&client_id=" + configJSON["client_id"].get<std::string>() + "&redirect_uri=";
+	
+	if(refresh){
+		postData = "grant_type=refresh_token&refresh_token=" +
+											   refreshEncode +
+											   "&access_type=offline&code=&client_id=" + 
+											   configJSON["client_id"].get<std::string>() + "&redirect_url=";
+	}else{
+		postData = "grant_type=refresh_token&refresh_token=" + 
+											   refreshEncode + 
+											   "&access_type=&code=&client_id=" + 
+											   configJSON["client_id"].get<std::string>() + "&redirect_uri=";
+	}
 
 	curl_easy_cleanup(curl);
 
@@ -136,14 +143,19 @@ void TDA::createAccessToken() {
 	postData = "";
 
 	// parse the request results into JSON object
-	std::cout << resResults << std::endl;
 	nlohmann::json resJSON = nlohmann::json::parse(resResults);
 
 	if(resJSON.contains("access_token")) {
 		// store the access token in configJSON
 		configJSON["access_token"] = resJSON["access_token"].get<std::string>();
-	} else if(resJSON.contains("error")) {
-		std::cout << "ERROR in fetching new Access Token" << std::endl;
+	} 
+
+	if(resJSON.contains("refresh_token")) {
+		configJSON["refresh_token"] = resJSON["refresh_token"].get<std::string>();
+	}
+
+	if(resJSON.contains("error")) {
+		std::cout << "ERROR in fetching new Access or Refresh Token" << std::endl;
 		std::cout << resJSON["error"] << std::endl;
 	}	
 }

@@ -30,6 +30,6 @@ class TDA {
 		void saveConfig();
 		void sendReq();
 		static size_t saveLibCurlRes(void *buffer, size_t size, size_t nmemb, std::string *s);
-		void createAccessToken();
+		void createAccessToken(bool refresh=false);
 		
 };
