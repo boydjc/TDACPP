@@ -19,11 +19,11 @@ class TDA {
 		// accessToken is retrieved from TD Ameritrade's API using the refresh token.
 		// accessToken is good for 30 minutes
 		// for 30 minutes
-		char* accessToken; 
+		std::string accessToken; 
 
 		// the clientId is the consumer key of your registered app in the 
 		// TD Ameritrade developer api site
-		char* clientId;
+		std::string clientId;
 
 		// This is the variable that curl will use to write the request 
 		// html results to using CURLOPT_WRITEDATA	
@@ -31,8 +31,10 @@ class TDA {
 
 		std::string reqUrl;
 
+		std::string postData;
+
 		void readEnvVars();
-		void testLibCurl();
+		int sendReq();
 		static size_t saveLibCurlRes(void *buffer, size_t size, size_t nmemb, std::string *s);
 		void createAccessToken();
 		
