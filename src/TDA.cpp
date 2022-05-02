@@ -12,9 +12,9 @@ TDA::TDA() {
 
 	readConfig();	
 
-	createAccessToken();
+	//createAccessToken();
 
-	saveConfig();
+	//saveConfig();
 }
 
 TDA::~TDA() {
@@ -61,9 +61,16 @@ void TDA::sendReq(){
 			headers = curl_slist_append(headers, "Accept-Encoding: gzip");
 			headers = curl_slist_append(headers, "Accept-Language: en-US");
 			headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded");
-
+			curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 			std::cout << "Setting post fields" << std::endl;
 			curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postData.c_str());
+		}else {
+			// set bearer token
+			std::cout << "SETTING BEARER" << std::endl;
+			struct curl_slist *headers=NULL;
+			headers = curl_slist_append(headers, ("Authorization: Bearer " + configJSON["access_token"].get<std::string>()).c_str());
+			curl_easy_setopt(curl, CURLOPT_XOAUTH2_BEARER, configJSON["access_token"].get<std::string>().c_str());
+			curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 		}
 
 		std::cout << "Setting callback function" << std::endl;
@@ -106,12 +113,13 @@ size_t TDA::saveLibCurlRes(void *buffer, size_t size, size_t nmemb, std::string 
 }
 
 void TDA::saveConfig() {
-	std::cout << configJSON.dump() << std::endl;
 	std::ofstream configFile("../config.json", std::ios::trunc);
 	configFile << configJSON.dump();
 	configFile.close();
 }
 
+// refresh=true will also get a new refresh_token
+// this only needs to be done every 90 days
 void TDA::createAccessToken(bool refresh) {
 
 	reqUrl = "https://api.tdameritrade.com/v1/oauth2/token";
@@ -151,6 +159,7 @@ void TDA::createAccessToken(bool refresh) {
 	} 
 
 	if(resJSON.contains("refresh_token")) {
+		std::cout << "WARNING!!!! CREATING NEW REFRESH TOKEN" << std::endl;
 		configJSON["refresh_token"] = resJSON["refresh_token"].get<std::string>();
 	}
 
@@ -158,5 +167,53 @@ void TDA::createAccessToken(bool refresh) {
 		std::cout << "ERROR in fetching new Access or Refresh Token" << std::endl;
 		std::cout << resJSON["error"] << std::endl;
 	}	
+}
+
+
+void TDA::getHistPrice(std::string ticker, std::string periodType, 
+					   std::string period, std::string freqType,
+					   std::string freq, unsigned int endDate,
+					   unsigned int startDate, bool extHourData){
+
+	reqUrl = "https://api.tdameritrade.com/v1/marketdata/" + ticker + "/pricehistory?";
+
+	// append the values for each parameter if they are there
+	reqUrl.append("periodType=" + periodType);
+
+	if(period != "") {
+		std::cout << "Period Present" << std::endl;
+		reqUrl.append("&period=" + period);
+	}
+
+	if(freqType != "") {
+		std::cout << "Frequence Type Present" << std::endl;
+		reqUrl.append("&frequencyType=" + freqType);
+	}
+
+	if(freq != "") {
+		std::cout << "Frequence Present" << std::endl;
+		reqUrl.append("&frequency=" + freq);
+	}
+
+	if(endDate != 0) {
+		std::cout << "End Date Present" << std::endl;
+		reqUrl.append("&endDate=" + endDate);
+	}
+
+	if(startDate != 0) {
+		std::cout << "Start date present" << std::endl;
+		reqUrl.append("&startDate=" + startDate);
+	}
+
+	if(extHourData) {
+		reqUrl.append("&needExtendedHoursData=true");
+	}else {
+		reqUrl.append("&needExtendedHoursData=false");
+	}
+
+	sendReq();
+
+	std::cout << resResults << std::endl;
+
 }
 

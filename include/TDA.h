@@ -10,6 +10,12 @@ class TDA {
 		TDA();
 		~TDA();
 
+	void getHistPrice(std::string ticker, std::string periodType="day",
+					  std::string period="", std::string freqType="",
+					  std::string freq="", unsigned int endDate=0,
+					  unsigned int startDate=0, bool extHourData=true);
+
+
 	private:
 		CURL *curl;
 		CURLcode res;
