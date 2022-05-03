@@ -32,6 +32,10 @@ class TDA {
 
 		std::string postData;
 
+		// the unix time stamp for when the access token was created
+		int64_t accessTokenCreationDate;
+		int64_t refreshTokenCreationDate;
+
 		void readConfig();
 		void saveConfig();
 		void sendReq();

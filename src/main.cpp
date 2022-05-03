@@ -7,7 +7,7 @@ int main() {
 
 	TDA testTda;
 
-	testTda.getHistPrice("AAPL");
+	//testTda.getHistPrice("AAPL");
 
 	return 0;
 }

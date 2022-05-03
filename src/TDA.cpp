@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
+#include <chrono>
 
 #include "../include/TDA.h"
 
@@ -12,9 +13,6 @@ TDA::TDA() {
 
 	readConfig();	
 
-	//createAccessToken();
-
-	//saveConfig();
 }
 
 TDA::~TDA() {
@@ -34,11 +32,40 @@ void TDA::readConfig() {
 		std::cout << "ERROR! Could not find refresh token." << std::endl;
 		std::cout << "Please make sure your refresh token is in your config.json file!" << std::endl;
 	}
+	/* if we have a refresh token but no creation date, then we can assume that this is the baseline 
+	/ refresh token that the user created when first using this class
+	/ although is fine for the first 90 days, we try to do the user a favor and create a new refresh 
+	/ token now so that the class knows when it was created. We can't accurately assume when 
+	/ the user created the baseline refresh token. This is purely to keep the user from having to manually
+	/ authenticate with TD Ameritrade again after 90 days*/
+	else if(configJSON.contains("refresh_token") && !(configJSON.contains("refresh_create_date"))) {
+		std::cout << "Found refresh token but no creation date. Creating new refresh token with creation date" << std::endl;
+		createAccessToken(true);
+		saveConfig();
+		readConfig();
+	}else if(configJSON.contains("refresh_token") && configJSON.contains("refresh_create_date")) {
+		std::cout << "TODO: CHECK FOR EXPIRED REFRESH_TOKEN" << std::endl;
 
-	// get the client id from environ variable
-	if(!(configJSON.contains("client_id"))) {
-		std::cout << "ERROR! Could not find client id." << std::endl;
-		std::cout << "Please make sure your client id is in your config.json file!" << std::endl;
+		// check to see if there is an access token in the config file
+		// if there is not then create one, if there is then check to make sure that it is still valid
+		if(configJSON.contains("access_token")) {
+			// check the date that it was created and see if it has expired
+			// access_tokens are only good for 30 minutes
+		
+			std::cout << "TODO: CHECK FOR EXPIRED ACCESS TOKEN" << std::endl;
+
+			// get the client id from environ variable
+			if(!(configJSON.contains("client_id"))) {
+				std::cout << "ERROR! Could not find client id." << std::endl;
+				std::cout << "Please make sure your client id is in your config.json file!" << std::endl;
+			}
+
+		}else if(!(configJSON.contains("access_token"))) {
+			std::cout << "Did not find access token. Creating new one" << std::endl;
+			createAccessToken();
+			saveConfig();
+			readConfig();
+		}
 	}
 }
 
@@ -153,14 +180,18 @@ void TDA::createAccessToken(bool refresh) {
 	// parse the request results into JSON object
 	nlohmann::json resJSON = nlohmann::json::parse(resResults);
 
+	std::cout << resJSON.dump() << std::endl;
+
 	if(resJSON.contains("access_token")) {
 		// store the access token in configJSON
 		configJSON["access_token"] = resJSON["access_token"].get<std::string>();
+		configJSON["access_create_date"] = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count(); 
 	} 
 
 	if(resJSON.contains("refresh_token")) {
 		std::cout << "WARNING!!!! CREATING NEW REFRESH TOKEN" << std::endl;
 		configJSON["refresh_token"] = resJSON["refresh_token"].get<std::string>();
+		configJSON["refresh_create_date"] = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 	}
 
 	if(resJSON.contains("error")) {
