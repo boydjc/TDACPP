@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <chrono>
+#include <stdlib.h>
 
 #include "../include/TDA.h"
 
@@ -44,15 +45,33 @@ void TDA::readConfig() {
 		saveConfig();
 		readConfig();
 	}else if(configJSON.contains("refresh_token") && configJSON.contains("refresh_create_date")) {
-		std::cout << "TODO: CHECK FOR EXPIRED REFRESH_TOKEN" << std::endl;
+		// check for expired refresh token
+
+		int64_t refreshCreation = configJSON["refresh_create_date"].get<int64_t>();
+
+		int64_t timeNow = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+
+		// 60 days
+		int64_t refreshExpirationDate = refreshCreation + 5184000000;
+
+		if(timeNow >= refreshExpirationDate) {
+			std::cout << "Refresh Token will expire in 30 days or less. Performing early renewal" << std::endl;
+			createAccessToken(true);
+			saveConfig();
+			readConfig();
+		}
 
 		// check to see if there is an access token in the config file
 		// if there is not then create one, if there is then check to make sure that it is still valid
 		if(configJSON.contains("access_token")) {
 			// check the date that it was created and see if it has expired
 			// access_tokens are only good for 30 minutes
-		
-			std::cout << "TODO: CHECK FOR EXPIRED ACCESS TOKEN" << std::endl;
+			
+			if(checkAccessExpire()) {
+				createAccessToken();
+				saveConfig();
+				readConfig();
+			}
 
 			// get the client id from environ variable
 			if(!(configJSON.contains("client_id"))) {
@@ -67,6 +86,22 @@ void TDA::readConfig() {
 			readConfig();
 		}
 	}
+}
+
+bool TDA::checkAccessExpire() {
+
+	int64_t accessCreation = configJSON["access_create_date"].get<int64_t>();
+	int64_t timeNow = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+			
+	// 30 minutes
+	int64_t accessExpirationDate = accessCreation + 1800000;
+			
+	if(timeNow > accessExpirationDate) {
+		return true;
+	}
+
+	return false;
+
 }
 
 void TDA::sendReq(){
@@ -206,45 +241,50 @@ void TDA::getHistPrice(std::string ticker, std::string periodType,
 					   std::string freq, unsigned int endDate,
 					   unsigned int startDate, bool extHourData){
 
-	reqUrl = "https://api.tdameritrade.com/v1/marketdata/" + ticker + "/pricehistory?";
+	if(!(checkAccessExpire()) {
 
-	// append the values for each parameter if they are there
-	reqUrl.append("periodType=" + periodType);
+		reqUrl = "https://api.tdameritrade.com/v1/marketdata/" + ticker + "/pricehistory?";
 
-	if(period != "") {
-		std::cout << "Period Present" << std::endl;
-		reqUrl.append("&period=" + period);
+		// append the values for each parameter if they are there
+		reqUrl.append("periodType=" + periodType);
+
+		if(period != "") {
+			std::cout << "Period Present" << std::endl;
+			reqUrl.append("&period=" + period);
+		}
+
+		if(freqType != "") {
+			std::cout << "Frequence Type Present" << std::endl;
+			reqUrl.append("&frequencyType=" + freqType);
+		}
+
+		if(freq != "") {
+			std::cout << "Frequence Present" << std::endl;
+			reqUrl.append("&frequency=" + freq);
+		}
+
+		if(endDate != 0) {
+			std::cout << "End Date Present" << std::endl;
+			reqUrl.append("&endDate=" + endDate);
+		}
+
+		if(startDate != 0) {
+			std::cout << "Start date present" << std::endl;
+			reqUrl.append("&startDate=" + startDate);
+		}
+
+		if(extHourData) {
+			reqUrl.append("&needExtendedHoursData=true");
+		}else {
+			reqUrl.append("&needExtendedHoursData=false");
+		}
+
+		sendReq();
+
+		std::cout << resResults << std::endl;
+
+	} else {
+		std::cout << "ERROR!! ACCESS TOKEN EXPIRED." << std::endl;
 	}
-
-	if(freqType != "") {
-		std::cout << "Frequence Type Present" << std::endl;
-		reqUrl.append("&frequencyType=" + freqType);
-	}
-
-	if(freq != "") {
-		std::cout << "Frequence Present" << std::endl;
-		reqUrl.append("&frequency=" + freq);
-	}
-
-	if(endDate != 0) {
-		std::cout << "End Date Present" << std::endl;
-		reqUrl.append("&endDate=" + endDate);
-	}
-
-	if(startDate != 0) {
-		std::cout << "Start date present" << std::endl;
-		reqUrl.append("&startDate=" + startDate);
-	}
-
-	if(extHourData) {
-		reqUrl.append("&needExtendedHoursData=true");
-	}else {
-		reqUrl.append("&needExtendedHoursData=false");
-	}
-
-	sendReq();
-
-	std::cout << resResults << std::endl;
-
 }
 
