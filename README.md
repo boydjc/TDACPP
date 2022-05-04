@@ -4,7 +4,7 @@ A class for interacting with TD Ameritrades API
 
 ## Dev Notes
 
-- The initial API refresh token that is first created though TD Ameritrade's authentication guide (https://developer.tdameritrade.com/content/authentication-faq) and client id need to be stored in a file named config.json in the parent directory. The file needs to look like the following:
+- The initial API refresh token that is first created through TD Ameritrade's authentication guide (https://developer.tdameritrade.com/content/authentication-faq) and client id need to be stored in a file named config.json in the parent directory. The file needs to look like the following:
 
 ```
 {
