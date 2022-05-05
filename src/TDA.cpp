@@ -107,7 +107,6 @@ bool TDA::checkAccessExpire() {
 void TDA::sendReq(){
 	std::cout << "Initializing curl" << std::endl;
 
-	int reqStatus = 0;
 	curl = curl_easy_init();
 
 	if(curl) {
@@ -241,7 +240,7 @@ void TDA::getHistPrice(std::string ticker, std::string periodType,
 					   std::string freq, unsigned int endDate,
 					   unsigned int startDate, bool extHourData){
 
-	if(!(checkAccessExpire()) {
+	if(!(checkAccessExpire())) {
 
 		reqUrl = "https://api.tdameritrade.com/v1/marketdata/" + ticker + "/pricehistory?";
 
@@ -285,6 +284,7 @@ void TDA::getHistPrice(std::string ticker, std::string periodType,
 
 	} else {
 		std::cout << "ERROR!! ACCESS TOKEN EXPIRED." << std::endl;
+		createAccessToken();
 	}
 }
 
