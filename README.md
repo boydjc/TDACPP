@@ -49,7 +49,7 @@ redirect_uri: {Callback URL} (https://127.0.0.1:8080 if thats what you used earl
 
 If everything goes well, then you should see a 200 response code followed by your refresh token. Congratz! 🥳 You're ready to start using TDACPP.
 
-The initial API refresh token that is first created through <a href="#getting-started">Getting Started</a> and client id (also known as the consumer key of your developer app) need to be stored in a file named config.json in the parent directory of your project. The file needs to look like the following:
+In order for the class to begin working, the initial API refresh token that is first created through <a href="#getting-started">Getting Started</a> and client id (also known as the consumer key of your developer app) need to be stored in a file named config.json in the parent directory of your project. The file needs to look like the following:
 
 ```
 {
