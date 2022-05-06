@@ -75,7 +75,7 @@ jDtB0Mrxjov3YEosFS10nQrQXLqub5LtCvYrqgEZjJXxVcsNNmg1WKmBjDtzGeXa9e5D3EGoTSFP61Tn
 
 <strong>Getting Price History</strong>
 
-```
+```C++
 void setHistPrice(std::string ticker, std::string periodType, 
 		  std::string period, std::string freqType,
 		  std::string freq, unsigned int endDate,
@@ -84,6 +84,18 @@ void setHistPrice(std::string ticker, std::string periodType,
 
 Corresonds to <a href="https://developer.tdameritrade.com/price-history/apis/get/marketdata/%7Bsymbol%7D/pricehistory">Get Price History</a>.
 
+The price data retrieved will be stored in a public `std::vector<Candle>` variable named `histPriceData` to be accessed. The Candle struct has the following attribues:
+
+```C++
+struct Candle {
+	std::string date;
+	float open;
+	float high;
+	float low;
+	float close;
+	unsigned long volume;
+};
+```
 
 params:
 
@@ -148,6 +160,10 @@ params:
 -	extHourData
 
 	<i>true to return extended hours data, false for regular market hours only. Default is true</i>
+	
+## Examples
+
+TODO
 
 
 
