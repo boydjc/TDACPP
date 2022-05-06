@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <chrono>
+#include <time.h>
 #include <stdlib.h>
 
 #include "../include/TDA.h"
@@ -235,10 +236,12 @@ void TDA::createAccessToken(bool refresh) {
 }
 
 
-void TDA::getHistPrice(std::string ticker, std::string periodType, 
+void TDA::setHistPrice(std::string ticker, std::string periodType, 
 					   std::string period, std::string freqType,
 					   std::string freq, unsigned int endDate,
-					   unsigned int startDate, bool extHourData){
+					   unsigned int startDate, bool extHourData) {
+
+	histPriceData.clear();
 
 	if(!(checkAccessExpire())) {
 
@@ -279,12 +282,46 @@ void TDA::getHistPrice(std::string ticker, std::string periodType,
 		}
 
 		sendReq();
+	
+		nlohmann::json resJSON = nlohmann::json::parse(resResults);
 
-		std::cout << resResults << std::endl;
+		nlohmann::json candlesJSON = resJSON["candles"];
 
-	} else {
-		std::cout << "ERROR!! ACCESS TOKEN EXPIRED." << std::endl;
-		createAccessToken();
+		for (auto it = candlesJSON.begin(); it != candlesJSON.end(); ++it) {
+
+			Candle newCandle;
+	
+			time_t datetime = (*it)["datetime"].get<int64_t>() / 1000;
+			struct tm *tm = localtime(&datetime);
+			char humanDate[20];
+
+			strftime(humanDate, 20, "%Y-%m-%d", tm);
+
+			newCandle.date = humanDate;
+
+			float open = (*it)["open"].get<float>();
+
+			newCandle.open = open;
+
+			float high = (*it)["high"].get<float>();
+
+			newCandle.high = high;
+
+			float low = (*it)["low"].get<float>();
+
+			newCandle.low = low;
+
+			float close = (*it)["close"].get<float>();
+			
+			newCandle.close = close;
+
+			unsigned long volume = (*it)["volume"].get<int>();
+
+			newCandle.volume = volume;
+	
+			histPriceData.push_back(newCandle);
+
+		}
 	}
 }
 

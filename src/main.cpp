@@ -3,28 +3,25 @@
 
 int main() {
 
-	std::cout << "Testing C++" << std::endl;
+	TDA testTda;
+
+	std::cout << "Enter a ticker to get price data for" << std::endl;
 	
-	PriceData test;
-	test.date = "2022-01-10";
-	test.open = 10.10;
-	test.high = 10.20;
-	test.low = 10.02;
-	test.close = 10.35;
-	test.volume = 14500000;
+	std::string ticker;
 
-	std::cout << "Price Data" << std::endl;
-	std::cout << "--------------------------" << std::endl;
-	std::cout << "Date: " << test.date << std::endl;
-	std::cout << "Open: " << test.open << std::endl;
-	std::cout << "High: " << test.high << std::endl;
-	std::cout << "Low: " << test.low << std::endl;
-	std::cout << "Close: " << test.close << std::endl;
-	std::cout << "Volume: " << test.volume << std::endl;
+	std::cout << ": ";
+	getline(std::cin, ticker);
 
-	//TDA testTda;
+	// testing
+	testTda.setHistPrice(ticker);
 
-	//testTda.getHistPrice("AAPL");
-
+	for(int i=0; i<testTda.histPriceData.size(); i++) {
+		std::cout << "Date: " << testTda.histPriceData[i].date << std::endl;
+		std::cout << "Open: " << testTda.histPriceData[i].open << std::endl;
+		std::cout << "High: " << testTda.histPriceData[i].high << std::endl;
+		std::cout << "Low: " << testTda.histPriceData[i].low << std::endl;
+		std::cout << "Close: " << testTda.histPriceData[i].close << std::endl;
+		std::cout << "Volume: " << testTda.histPriceData[i].volume << std::endl;
+	}
 	return 0;
 }
