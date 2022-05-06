@@ -164,8 +164,65 @@ struct Candle {
 
 ## Examples
 
-TODO
+<strong>Getting Price History</strong>
+```C++
+#include "../include/TDA.h"
 
+int main() {
+    
+    TDA testTDA;
+    
+    testTDA.setHistPrice("AAPL");
+    
+    for(int i=0; i<5; i++) {
+	std::cout << "Date: " << testTda.histPriceData[i].date << std::endl;
+	std::cout << "Open: " << testTda.histPriceData[i].open << std::endl;
+	std::cout << "High: " << testTda.histPriceData[i].high << std::endl;
+	std::cout << "Low: " << testTda.histPriceData[i].low << std::endl;
+	std::cout << "Close: " << testTda.histPriceData[i].close << std::endl;
+	std::cout << "Volume: " << testTda.histPriceData[i].volume << std::endl;
+	std::cout << "---------------------------------" << std::endl;
+    }
+    return 0;
+}
+```
+<details><summary>Output</summary>
+Date: 2022-04-22<br>
+Open: 166<br>
+High: 166.09<br>
+Low: 166<br>
+Close: 166.09<br>
+Volume: 979<br>
+---------------------------------<br>
+Date: 2022-04-22<br>
+Open: 166.01<br>
+High: 166.01<br>
+Low: 166<br>
+Close: 166<br>
+Volume: 1990<br>
+---------------------------------<br>
+Date: 2022-04-22<br>
+Open: 165.96<br>
+High: 165.96<br>
+Low: 165.93<br>
+Close: 165.93<br>
+Volume: 1163<br>
+---------------------------------<br>
+Date: 2022-04-22<br>
+Open: 166.06<br>
+High: 166.07<br>
+Low: 166.05<br>
+Close: 166.05<br>
+Volume: 1171<br>
+---------------------------------<br>
+Date: 2022-04-22<br>
+Open: 166.05<br>
+High: 166.05<br>
+Low: 166.05<br>
+Close: 166.05<br>
+Volume: 110<br>
+---------------------------------<br>
+</details>
 
 
 
