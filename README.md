@@ -2,6 +2,10 @@
 
 A class for interacting with TD Ameritrades API
 
+## Table of Contents
+<a href="#getting-started">Getting Started</a><br>
+<a href="#how-to-use">How to use</a>
+
 ## Getting Started
 
 <sub><i>The info for getting started was taken from https://developer.tdameritrade.com/content/authentication-faq and https://developer.tdameritrade.com/content/phase-1-authentication-update-xml-based-api. Check there if you run into problems.</i></sub>
