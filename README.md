@@ -97,7 +97,7 @@ struct Candle {
 };
 ```
 
-params:
+<details><summary>params</summary>
 
 -	ticker
 	
@@ -160,7 +160,8 @@ params:
 -	extHourData
 
 	<i>true to return extended hours data, false for regular market hours only. Default is true</i>
-	
+</details>
+
 ## Examples
 
 TODO
