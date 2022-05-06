@@ -84,19 +84,6 @@ void setHistPrice(std::string ticker, std::string periodType,
 
 Corresonds to <a href="https://developer.tdameritrade.com/price-history/apis/get/marketdata/%7Bsymbol%7D/pricehistory">Get Price History</a>.
 
-The price data retrieved will be stored in a public `std::vector<Candle>` variable named `histPriceData` to be accessed. The Candle struct has the following attribues:
-
-```C++
-struct Candle {
-	std::string date;
-	float open;
-	float high;
-	float low;
-	float close;
-	unsigned long volume;
-};
-```
-
 <details><summary>params</summary>
 
 -	ticker
@@ -161,6 +148,19 @@ struct Candle {
 
 	<i>true to return extended hours data, false for regular market hours only. Default is true</i>
 </details>
+
+The price data retrieved will be stored in a public `std::vector<Candle>` variable named `histPriceData` to be accessed. The Candle struct has the following attribues:
+
+```C++
+struct Candle {
+	std::string date;
+	float open;
+	float high;
+	float low;
+	float close;
+	unsigned long volume;
+};
+```
 
 ## Examples
 
