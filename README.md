@@ -8,62 +8,78 @@ A class for interacting with TD Ameritrades API
 <strong>Getting Price History</strong>
 
 ```
-	void setHistPrice(std::string ticker, std::string periodType, 
-					  std::string period, std::string freqType,
-					  std::string freq, unsigned int endDate,
-					  unsigned int startDate, bool extHourData)
+void setHistPrice(std::string ticker, std::string periodType, 
+		  std::string period, std::string freqType,
+		  std::string freq, unsigned int endDate,
+		  unsigned int startDate, bool extHourData)
 ```
 
 Corresonds to <a href="https://developer.tdameritrade.com/price-history/apis/get/marketdata/%7Bsymbol%7D/pricehistory">Get Price History</a>.
 
 
-	params:
+params:
 
-		-	<strong>ticker</strong> = ticker symbol of company
+-	ticker
+	
+	<i>ticker symbol of company</i>
 
-		-	<strong>periodType</strong> = The type of period to show. Valid values are day, month, year, or ytd (year to date). 
-						 				  Default is day.
+-	periodType
 
-		-	<strong>period</strong> = The number of periods to show.
+	<i>The type of period to show. Valid values are day, month, year, or ytd (year to date). 
+	   Default is day</i>
 
-				Example: For a 2 day / 1 min chart, the values would be:
+-	period
+
+	<i>The number of periods to show.
+
+	Example: For a 2 day / 1 min chart, the values would be:
 					 					
-				period: 2
-				periodType: day
-				frequency: 1
-				frequencyType: min
+	period: 2<br>
+	periodType: day<br>			
+	frequency: 1<br>
+	frequencyType: min<br>
 
-				Valid periods by periodType (defaults marked with an asterisk):
+	Valid periods by periodType (defaults marked with an asterisk):
 
-				day: 1, 2, 3, 4, 5, 10*
-				month: 1*, 2, 3, 6
-				year: 1*, 2, 3, 5, 10, 15, 20
-				ytd: 1*
+	day: 1, 2, 3, 4, 5, 10*<br>
+	month: 1*, 2, 3, 6<br>
+	year: 1*, 2, 3, 5, 10, 15, 20<br>
+	ytd: 1*<br></i>
 
-		-	<strong>freqType</strong> = The type of frequency with which a new candle is formed.
+-	freqType
 
-				Valid frequencyTypes by periodType (defaults marked with an asterisk):
+	<i>The type of frequency with which a new candle is formed.
 
-				day: minute*
-				month: daily, weekly*
-				year: daily, weekly, monthly*
-				ytd: daily, weekly*
+	Valid frequencyTypes by periodType (defaults marked with an asterisk):
 
-		-	<strong>freq</strong> = The number of the frequencyType to be included in each candle.
+	day: minute*<br>
+	month: daily, weekly*<br>
+	year: daily, weekly, monthly*<br>
+	ytd: daily, weekly*<br></i>
 
-				Valid frequencies by frequencyType (defaults marked with an asterisk):
+-	freq
 
-				minute: 1*, 5, 10, 15, 30
-				daily: 1*
-				weekly: 1*
-				monthly: 1*
+	<i>The number of the frequencyType to be included in each candle.
 
-		-	<strong>endDate</strong> = End date as milliseconds since epoch. If startDate and endDate are provided, period should not be provided. 
-				Default is previous trading day.
+	Valid frequencies by frequencyType (defaults marked with an asterisk):
 
-		-	<strong>startDate</strong> = Start date as milliseconds since epoch. If startDate and endDate are provided, period should not be provided.
+	minute: 1*, 5, 10, 15, 30<br>
+	daily: 1*<br>
+	weekly: 1*<br>
+	monthly: 1*<br></i>
 
-		-	<strong>extHourData</strong> = true to return extended hours data, false for regular market hours only. Default is true */
+-	endDate
+
+	<i>End date as milliseconds since epoch. If startDate and endDate are provided, period should not be provided. 
+	   Default is previous trading day.</i>
+
+-	startDate
+
+	<i>Start date as milliseconds since epoch. If startDate and endDate are provided, period should not be provided.</i>
+
+-	extHourData
+
+	<i>true to return extended hours data, false for regular market hours only. Default is true</i>
 
 
 ## Dev Notes
