@@ -175,7 +175,7 @@ size_t TDA::saveLibCurlRes(void *buffer, size_t size, size_t nmemb, std::string 
 }
 
 void TDA::saveConfig() {
-	std::ofstream configFile("../config.json", std::ios::trunc);
+	std::ofstream configFile("../tda-config.json", std::ios::trunc);
 	configFile << configJSON.dump();
 	configFile.close();
 }
