@@ -4,7 +4,8 @@ A class for interacting with TD Ameritrades API
 
 ## Table of Contents
 <a href="#getting-started">Getting Started</a><br>
-<a href="#how-to-use">How to use</a>
+<a href="#how-to-use">How to use</a><br>
+<a href="#todo-api-implementations">TODO API Implementations</a>
 
 ## Getting Started
 
