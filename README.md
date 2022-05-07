@@ -77,7 +77,7 @@ jDtB0Mrxjov3YEosFS10nQrQXLqub5LtCvYrqgEZjJXxVcsNNmg1WKmBjDtzGeXa9e5D3EGoTSFP61Tn
 <strong>Getting Price History</strong>
 
 ```C++
-std::vector<Candle> setHistPrice(std::string ticker, std::string periodType, 
+std::vector<Candle> getHistPrice(std::string ticker, std::string periodType, 
 		    std::string period, std::string freqType,
 		    std::string freq, unsigned int endDate,
 		    unsigned int startDate, bool extHourData)
