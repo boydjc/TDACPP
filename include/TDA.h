@@ -331,14 +331,12 @@ class TDA {
 
 			extHourData - true to return extended hours data, false for regular market hours only. Default is true */
 
-		void setHistPrice(std::string ticker, std::string periodType="day",
+		std::vector<Candle> setHistPrice(std::string ticker, std::string periodType="day",
 					  	  std::string period="", std::string freqType="",
 					  	  std::string freq="", unsigned int endDate=0,
 					  	  unsigned int startDate=0, bool extHourData=true);
 
 		/* END set & get functions */
-
-		std::vector<Candle> histPriceData;
 
 	private:
 		CURL *curl;
@@ -358,6 +356,8 @@ class TDA {
 		// the unix time stamp for when the access token was created
 		int64_t accessTokenCreationDate;
 		int64_t refreshTokenCreationDate;
+
+		std::vector<Candle> histPriceData;
 
 		void readConfig();
 		void saveConfig();
