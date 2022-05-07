@@ -77,10 +77,10 @@ jDtB0Mrxjov3YEosFS10nQrQXLqub5LtCvYrqgEZjJXxVcsNNmg1WKmBjDtzGeXa9e5D3EGoTSFP61Tn
 <strong>Getting Price History</strong>
 
 ```C++
-void setHistPrice(std::string ticker, std::string periodType, 
-		  std::string period, std::string freqType,
-		  std::string freq, unsigned int endDate,
-		  unsigned int startDate, bool extHourData)
+std::vector<Candle> setHistPrice(std::string ticker, std::string periodType, 
+		    std::string period, std::string freqType,
+		    std::string freq, unsigned int endDate,
+		    unsigned int startDate, bool extHourData)
 ```
 
 Corresonds to <a href="https://developer.tdameritrade.com/price-history/apis/get/marketdata/%7Bsymbol%7D/pricehistory">Get Price History</a>.
@@ -150,7 +150,7 @@ Corresonds to <a href="https://developer.tdameritrade.com/price-history/apis/get
 	<i>true to return extended hours data, false for regular market hours only. Default is true</i>
 </details>
 
-The price data retrieved will be stored in a public `std::vector<Candle>` variable named `histPriceData` to be accessed. The Candle struct has the following attribues:
+The Candle struct has the following attribues:
 
 ```C++
 struct Candle {
@@ -173,15 +173,15 @@ int main() {
     
     TDA testTDA;
     
-    testTDA.setHistPrice("AAPL");
+    std::vector<Candle> histPriceData = testTDA.getHistPrice("AAPL");
     
     for(int i=0; i<5; i++) {
-	std::cout << "Date: " << testTda.histPriceData[i].date << std::endl;
-	std::cout << "Open: " << testTda.histPriceData[i].open << std::endl;
-	std::cout << "High: " << testTda.histPriceData[i].high << std::endl;
-	std::cout << "Low: " << testTda.histPriceData[i].low << std::endl;
-	std::cout << "Close: " << testTda.histPriceData[i].close << std::endl;
-	std::cout << "Volume: " << testTda.histPriceData[i].volume << std::endl;
+	std::cout << "Date: " << histPriceData[i].date << std::endl;
+	std::cout << "Open: " << histPriceData[i].open << std::endl;
+	std::cout << "High: " << histPriceData[i].high << std::endl;
+	std::cout << "Low: " << histPriceData[i].low << std::endl;
+	std::cout << "Close: " << histPriceData[i].close << std::endl;
+	std::cout << "Volume: " << histPriceData[i].volume << std::endl;
 	std::cout << "---------------------------------" << std::endl;
     }
     return 0;
