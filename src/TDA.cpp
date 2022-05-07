@@ -236,7 +236,7 @@ void TDA::createAccessToken(bool refresh) {
 }
 
 
-void TDA::setHistPrice(std::string ticker, std::string periodType, 
+std::vector<Candle> TDA::setHistPrice(std::string ticker, std::string periodType, 
 					   std::string period, std::string freqType,
 					   std::string freq, unsigned int endDate,
 					   unsigned int startDate, bool extHourData) {
@@ -323,5 +323,7 @@ void TDA::setHistPrice(std::string ticker, std::string periodType,
 
 		}
 	}
+
+	return histPriceData;
 }
 
