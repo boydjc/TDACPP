@@ -25,7 +25,7 @@ TDA::~TDA() {
 // Retrieves values like refresh token and client id through config.json
 void TDA::readConfig() {
 
-	std::ifstream configFile("../config.json");
+	std::ifstream configFile("../tda-config.json");
 	configFile >> configJSON;
 	configFile.close();
 
