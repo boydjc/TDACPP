@@ -13,7 +13,7 @@ int main() {
 	getline(std::cin, ticker);
 
 	// testing
-	std::vector<Candle> histPriceData = testTda.setHistPrice(ticker);
+	std::vector<Candle> histPriceData = testTda.getHistPrice(ticker);
 
 	for(int i=0; i<5; i++) {
 		std::cout << "Date: " << histPriceData[i].date << std::endl;
