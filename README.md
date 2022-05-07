@@ -84,7 +84,7 @@ void setHistPrice(std::string ticker, std::string periodType,
 
 Corresonds to <a href="https://developer.tdameritrade.com/price-history/apis/get/marketdata/%7Bsymbol%7D/pricehistory">Get Price History</a>.
 
-<details><summary>params</summary>
+<details><summary>Click for Params</summary>
 
 -	ticker
 	
@@ -186,7 +186,7 @@ int main() {
     return 0;
 }
 ```
-<details><summary>Output</summary>
+<details><summary>Click for Output</summary>
 Date: 2022-04-22<br>
 Open: 166<br>
 High: 166.09<br>
@@ -224,5 +224,72 @@ Volume: 110<br>
 ---------------------------------<br>
 </details>
 
+
+## TODO API Implementations
+
+<details><summary>Click for Details</summary>
+
+#### Accounts and Trading
+	
+- [ ] Cancel Order
+- [ ] Get Order
+- [ ] Get Orders By Path
+- [ ] Get Orders By Query
+- [ ] Place Order
+- [ ] Replace Order
+
+- [ ] Create Saved Order
+- [ ] Delete Saved Order
+- [ ] Get Saved Order
+- [ ] Get Saved Orders By Path
+- [ ] Replace Saved Order
+
+- [ ] Get Account
+- [ ] Get Accounts
+
+#### Authentication
+- [X] Post Access Token
+
+#### Instruments
+- [ ] Search Instruments
+- [ ] Get Instruments
+
+#### Market Hours
+- [ ] Get Hours for Multiple Markets
+- [ ] Get Hours for Single Market
+
+#### Movers
+- [ ] Get Movers
+
+#### Option Chains
+- [ ] Get Option Chain
+
+#### Price History
+- [X] Get Price History
+
+#### Quotes
+- [ ] Get Quote
+- [ ] Get Quotes
+
+#### Transaction History
+- [ ] Get Transaction
+- [ ] Get Transactions
+
+#### User Info & Preferences
+- [ ] Get Preferences
+- [ ] Get Streamer Subscription Keys
+- [ ] Get User Principals
+- [ ] Update Preferences
+
+#### Watchlist
+- [ ] Create Watchlist
+- [ ] Delete Watchlist
+- [ ] Get Watchlist
+- [ ] Get Watchlists for Multiple Accounts
+- [ ] Get Watchlists for Single Account
+- [ ] Replace Watchlist
+- [ ] Update WatchList
+</details>
+   
 
 
