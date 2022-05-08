@@ -5,7 +5,7 @@ int main() {
 
 	TDA testTda;
 
-	std::cout << "Enter a ticker to get price data for" << std::endl;
+	std::cout << "Enter a ticker: " << std::endl;
 	
 	std::string ticker;
 
@@ -13,7 +13,7 @@ int main() {
 	getline(std::cin, ticker);
 
 	// testing
-	std::vector<Candle> histPriceData = testTda.getHistPrice(ticker);
+	/*std::vector<Candle> histPriceData = testTda.getHistPrice(ticker);
 
 	for(int i=0; i<5; i++) {
 		std::cout << "Date: " << histPriceData[i].date << std::endl;
@@ -23,6 +23,9 @@ int main() {
 		std::cout << "Close: " << histPriceData[i].close << std::endl;
 		std::cout << "Volume: " << histPriceData[i].volume << std::endl;
 		std::cout << "---------------------------------" << std::endl;
-	}
+	}*/
+
+	testTda.getQuote(ticker);
+
 	return 0;
 }

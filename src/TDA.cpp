@@ -327,3 +327,88 @@ std::vector<Candle> TDA::getHistPrice(std::string ticker, std::string periodType
 	return histPriceData;
 }
 
+
+void TDA::getQuote(std::string symbol) {
+
+	if(!(checkAccessExpire())) {
+		
+		reqUrl = "https://api.tdameritrade.com/v1/marketdata/" + symbol + "/quotes";
+
+		sendReq();
+
+		nlohmann::json resJSON = nlohmann::json::parse(resResults);
+
+		nlohmann::json symbolJSON = resJSON[symbol];
+
+		std::cout << symbolJSON << std::endl;
+		
+		Quote newQuote;
+
+		newQuote.symbol = symbolJSON.contains("symbol") ? symbolJSON["symbol"].get<std::string>() : "";
+		newQuote.assetMainType = symbolJSON.contains("assetMainType") ? symbolJSON["assetMainType"].get<std::string>() : "";
+		newQuote.assetSubType = symbolJSON.contains("assetSubType") ? symbolJSON["assetSubType"].get<std::string>() : "";
+		newQuote.assetType = symbolJSON.contains("assetType") ? symbolJSON["assetType"].get<std::string>() : "";
+		newQuote.exchange = symbolJSON.contains("exchange") ? symbolJSON["exchange"].get<std::string>() : "";
+		newQuote.exchangeName = symbolJSON.contains("exchangeName") ? symbolJSON["exchangeName"].get<std::string>() : "";
+		newQuote.divDate = symbolJSON.contains("divDate") ? symbolJSON["divDate"].get<std::string>() : "";
+		newQuote.securityStatus = symbolJSON.contains("securityStatus") ? symbolJSON["securityStatus"].get<std::string>() : "";
+		newQuote.bidId = symbolJSON.contains("bidId") ? symbolJSON["bidId"].get<std::string>() : "";
+		newQuote.askId = symbolJSON.contains("askId") ? symbolJSON["askId"].get<std::string>() : "";
+		newQuote.description = symbolJSON.contains("description") ? symbolJSON["description"].get<std::string>() : "";
+		newQuote.lastId = symbolJSON.contains("lastId") ? symbolJSON["lastId"].get<std::string>() : "";
+		newQuote.product = symbolJSON.contains("product") ? symbolJSON["product"].get<std::string>() : "";
+		newQuote.futurePriceFormat = symbolJSON.contains("futurePriceFormat") ? symbolJSON["futurePriceFormat"].get<std::string>() : "";
+		newQuote.futureTradingHours = symbolJSON.contains("futureTradingHours") ? symbolJSON["futureTradingHours"].get<std::string>() : "";
+		newQuote.futureActiveSymbol = symbolJSON.contains("futureActiveSymbol") ? symbolJSON["futureActiveSymbol"].get<std::string>() : "";
+		newQuote.futureExpirationDate = symbolJSON.contains("futureExpirationDate") ? symbolJSON["futureExpirationDate"].get<std::string>() : "";
+		newQuote.contractType = symbolJSON.contains("contractType") ? symbolJSON["contractType"].get<std::string>() : "";
+		newQuote.underlying = symbolJSON.contains("underlying") ? symbolJSON["underlying"].get<std::string>() : "";
+		newQuote.expriationType = symbolJSON.contains("expirationType") ? symbolJSON["expirationType"].get<std::string>() : "";
+		newQuote.exerciseType = symbolJSON.contains("exerciseType") ? symbolJSON["exerciseType"].get<std::string>() : "";
+		newQuote.delieverables = symbolJSON.contains("deliverables") ? symbolJSON["deliverables"].get<std::string>() : "";
+		newQuote.uvExpirationType = symbolJSON.contains("uvExpirationType") ? symbolJSON["uvExpirationType"].get<std::string>() : "";
+		newQuote.settlementType = symbolJSON.contains("settlementType") ? symbolJSON["settlementType"].get<std::string>() : "";
+		newQuote.tradingHours = symbolJSON.contains("tradingHours") ? symbolJSON["tradingHours"].get<std::string>() : "";
+		newQuote.marketMaker = symbolJSON.contains("marketMaker") ? symbolJSON["marketMaker"].get<std::string>() : "";
+		newQuote.cusip = symbolJSON.contains("cusip") ? symbolJSON["cusip"].get<std::string>() : "";
+		newQuote.lastPrice = symbolJSON.contains("lastPrice") ? symbolJSON["lastPrice"].get<float>() : 0.00;
+		newQuote.openPrice = symbolJSON.contains("openPrice") ? symbolJSON["openPrice"].get<float>() : 0.00;
+		newQuote.highPrice = symbolJSON.contains("highPrice") ? symbolJSON["highPrice"].get<float>() : 0.00;
+		newQuote.lowPrice = symbolJSON.contains("lowPrice") ? symbolJSON["lowPrice"].get<float>() : 0.00;
+		newQuote.closePrice = symbolJSON.contains("closePrice") ? symbolJSON["closePrice"].get<float>() : 0.00;
+		newQuote.bidPrice = symbolJSON.contains("bidPrice") ? symbolJSON["bidPrice"].get<float>() : 0.00;
+		newQuote.netChange = symbolJSON.contins("netChange") ? symbolJSON["netChange"].get<float>() : 0.00;
+		newQuote.fiftyTwoWeekHigh = symbolJSON.contains("52WkHigh") ? symbolJSON["52WkHigh"].get<float>() : 0.00;
+		newQuote.fiftyTwoWeekLow = symbolJSON.contains("52WkLow") ? symbolJSON["52WkHigh"].get<float>() : 0.00;
+		newQuote.peRatio = symbolJSON.contains("peRatio") ? symbolJSON["peRatio"].get<float>() : 0.00;
+		newQuote.divAmount = symbolJSON.contains("divAmount") ? symbolJSON["divAmount"].get<float>() : 0.00;
+		newQuote.divYield = symbolJSON.contains("divYield") ? symbolJSON["divYield"].get<float>() : 0.00;
+		newQuote.futurePercentChange = symbolJSON.contains("futurePercentChange") ? symbolJSON["futurePercentChange"].get<float>() : 0.00;
+		newQuote.moneyIntrinsicValue = symbolJSON.contains("moneyIntrinsicValue") ? symbolJSON["moneyIntrinsicValue"].get<float>() : 0.00;
+		newQuote.mark = symbolJSON.contains("mark") ? symbolJSON["mark"].get<float>() : 0.00;
+		newQuote.tick = symbolJSON.contains("tick") ? symbolJSON["tick"].get<float>() : 0.00;
+		newQuote.fiftyWkHigh = symbolJSON.contains("fiftyWkHigh") ? symbolJSON["fiftyWkHigh"].get<float>() : 0.00;
+		newQuote.fiftyWkLow = symbolJSON.contains("fiftyWkLow") ? symbolJSON["fiftyWkLow"].get<float>() : 0.00;
+		newQuote.askPrice = symbolJSON.contains("askPrice") ? symbolJSON["askPrice"].get<float>() : 0.00;
+		newQuote.volatility = symbolJSON.contains("volatility") ? symbolJSON["volatlity"].get<float>() : 0.00;
+		newQuote.futureSettlementPrice = symbolJSON.contains("futureSettlementPrice") ? symbolJSON["futureSettlementPrice"].get<float>() : 0.00;
+		newQuote.strikePrice = symbolJSON.contains("strikePrice") ? symbolJSON["strikePrice"].get<float>() : 0.00;
+		newQuote.timeValue = symbolJSON.contains("timeValue") ? symbolJSON["timeValue"].get<float>() : 0.00;
+		newQuote.delta = symbolJSON.contains("delta") ? symbolJSON["delta"].get<float>() : 0.00;
+		newQuote.gamma = symbolJSON.contains("gamma") ? symbolJSON["gamma"].get<float>() : 0.00;
+		newQuote.theta = symbolJSON.contains("theta") ? symbolJSON["theta"].get<float>() : 0.00;
+		newQuote.vega = symbolJSON.contains("vega") ? symbolJSON["vega"].get<float>() : 0.00;
+		newQuote.rho = symbolJSON.contains("rho") ? symbolJSON["rho"].get<float>() : 0.00;
+		newQuote.theoreticalOptionValue = symbolJSON.contains("theoreticalOptionValue") ? symbolJSON["theoreticalOptionValue"].get<float>() : 0.00;
+		newQuote.underlyingPrice = symbolJSON.contains("underlyingPrice") ? symbolJSON["underlyingPrice"].get<float>() : 0.00;
+		newQuote.percentChange = symbolJSON.contains("percentChange") ? symbolJSON["percentChange"].get<float>() : 0.00;
+		newQuote.regularMarketLastPrice = symbolJSON.contains("regularMarketLastPrice") ? symbolJSON["regularMarketLastPrice"].get<float>(): 0.00;
+		newQuote.regularMarketNetChange = symbolJSON.contains("regularMarketNetChange") ? symbolJSON["regularMarketNetChange"].get<float>() : 0.00;
+		newQuote.digits = symbolJSON.contains("digits") ? symbolJSON["digits"].get<int>() : 0;
+		newQuote.nAV = symbolJSON.contains("nAV") ? symbolJSON["nAV"].get<int>() : 0;
+		newQuote.openInterest = symbolJSON.contains("openInterest") ? symbolJSON["openInterest"].get<int>() : 0;
+		newQuote.futureMultiplier = symbolJSON.contains("futureMultiplier") ? symbolJSON["futureMultiplier"].get<int>() : 0;
+		newQuote.tickAmount = symbolJSON.contains("tickAmount") ? symbolJSON["tickAmount"].get<int>() : 0;
+
+	}
+}
