@@ -85,6 +85,8 @@ std::vector<Candle> getHistPrice(std::string ticker, std::string periodType,
 
 Corresonds to <a href="https://developer.tdameritrade.com/price-history/apis/get/marketdata/%7Bsymbol%7D/pricehistory">Get Price History</a>.
 
+<a href="#histPriceEx">EXAMPLE</a>
+
 <details><summary>Click for Params</summary>
 
 -	ticker
@@ -167,6 +169,8 @@ struct Candle {
 Quote getQuote(std::string symbol);
 ```
 Corresponds to <a href="https://developer.tdameritrade.com/quotes/apis/get/marketdata/%7Bsymbol%7D/quotes">Get Quote</a>
+
+<a href="#getQuoteEx">EXAMPLE</a>
 
 <details><summary>Click for Quote Struct attributes</summary>
 	
@@ -284,7 +288,7 @@ struct Quote {
 
 ## Examples
 
-<strong>Getting Price History</strong>
+<strong id="histPriceEx">Getting Price History</strong>
 ```C++
 #include "../include/TDA.h"
 
@@ -344,7 +348,7 @@ Volume: 110<br>
 ---------------------------------<br>
 </details>
 
-<strong>Getting Quote</strong>
+<strong id="getQuoteEx">Getting Quote</strong>
 ```C++
 #include "../include/TDA.h"
 
