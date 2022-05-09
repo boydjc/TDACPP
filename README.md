@@ -162,6 +162,125 @@ struct Candle {
 	unsigned long volume;
 };
 ```
+<strong>Getting Quote</strong>
+```C++
+Quote getQuote(std::string symbol);
+```
+Corresponds to <a href="https://developer.tdameritrade.com/quotes/apis/get/marketdata/%7Bsymbol%7D/quotes">Get Quote</a>
+
+<details><summary>Click for Quote Struct attributes</summary>
+	
+```C++
+struct Quote {
+	std::string symbol = "";
+	std::string assetMainType = "";
+	std::string assetSubType = "";
+	std::string assetType = "";
+	std::string exchange = "";
+	std::string exchangeName = "";
+	std::string divDate = "";
+	std::string securityStatus = "";
+	std::string bidId = "";
+	std::string askId = "";
+	std::string description = "";
+	std::string lastId = "";
+	std::string product = "";
+	std::string futurePriceFormat = "";
+	std::string futureTradingHours = "";
+	std::string futureActiveSymbol = "";
+	std::string futureExpirationDate = "";
+	std::string contractType = "";
+	std::string underlying = "";
+	std::string expirationType = "";
+	std::string exerciseType = "";
+	std::string deliverables = "";
+	std::string uvExpirationType = "";
+	std::string settlementType = "";
+	std::string tradingHours = "";
+	std::string marketMaker = "";
+	std::string cusip = "";
+	float lastPrice = 0.00;
+	float openPrice = 0.00;
+	float highPrice = 0.00;
+	float lowPrice = 0.00;
+	float closePrice = 0.00;
+	float bidPrice = 0.00;
+	float netChange = 0.00;
+	float fiftyTwoWeekHigh = 0.00;
+	float fiftyTwoWeekLow = 0.00;
+	float peRatio = 0.00;
+	float divAmount = 0.00;
+	float divYield = 0.00;
+	float futurePercentChange = 0.00;
+	float moneyIntrinsicValue = 0.00;
+	float mark = 0.00;
+	float tick = 0.00;
+	float fiftyWkHigh = 0.00;
+	float fiftyWkLow = 0.00;
+	float askPrice = 0.00;
+	float volatility = 0.00;
+	float futureSettlementPrice = 0.00;
+	float strikePrice = 0.00;
+	float timeValue = 0.00;
+	float delta = 0.00;
+	float gamma = 0.00;
+	float theta = 0.00;;
+	float vega = 0.00;
+	float rho = 0.00;
+	float theoreticalOptionValue = 0.00; 
+	float underlyingPrice = 0.00;
+	float percentChange = 0.00;
+	float regularMarketLastPrice = 0.00;
+	float regularMarketNetChange = 0.00;
+	int digits = 0;
+	int nAV = 0;
+	int openInterest = 0;
+	int futureMultiplier = 0;
+	int tickAmount = 0;
+	int totalVolume = 0;
+	int bidSize = 0;
+	int askSize = 0;
+	int lastSize = 0;
+	int multiplier = 0;
+	int regularMarketLastSize = 0;
+	long tradeTimeInLong = 0;
+	long quoteTimeInLong = 0;
+	long regularMarketTradeTimeInLong = 0;
+	double bidPriceInDouble = 0.00;
+	double askPriceInDouble = 0.00;
+	double lastPriceInDouble = 0.00;
+	double highPriceInDouble = 0.00;
+	double lowPriceInDouble = 0.00;
+	double closePriceInDouble = 0.00;
+	double openPriceInDouble = 0.00;
+	double netChangeInDouble = 0.00;
+	double moneyIntrinsicValueInDouble = 0.00;
+	double markChangeInDouble = 0.00;
+	double markPercentChangeInDouble = 0.00;
+	double netPercentChangeInDouble = 0.00;
+	double regularMarketPercentChangeInDouble = 0.00;
+	double multiplierInDouble = 0.00;
+	double strikePriceInDouble = 0.00;
+	double timeValueInDouble = 0.00;
+	double deltaInDouble = 0.00;
+	double gammaInDouble = 0.00;
+	double thetaInDouble = 0.00;
+	double vegaInDouble = 0.00;
+	double rhoInDouble = 0.00;
+	double changeInDouble = 0.00;
+	double fiftyTwoWkHighInDouble = 0.00;
+	double fiftyTwoWkLowInDouble = 0.00;
+	bool futureIsTradable = false;
+	bool futureIsActive = false;
+	bool inTheMoney = false;
+	bool isTradable = false;
+	bool marginable = false;
+	bool shortable = false;
+	bool realTimeEntitled = false;
+	bool delayed = false;
+};
+```
+</details>
 
 ## Examples
 
@@ -225,6 +344,38 @@ Volume: 110<br>
 ---------------------------------<br>
 </details>
 
+<strong>Getting Quote</strong>
+```C++
+#include "../include/TDA.h"
+
+int main() {
+    
+    TDA testTDA;
+    
+    Quote histPriceData = testTDA.getQuote("AAPL");
+    
+    std::cout << "Symbol: " << testQuote.symbol << std::endl;
+    std::cout << "Last Price: " << testQuote.lastPrice << std::endl;
+    std::cout << "Last Size: " << testQuote.lastSize << std::endl;
+    std::cout << "Bid Price: " << testQuote.bidPrice << std::endl;
+    std::cout << "Bid Size: " << testQuote.bidSize << std::endl;
+    std::cout << "Ask Price: " << testQuote.bidPrice << std::endl;
+    std::cout << "Ask Size: " << testQuote.askSize << std::endl;
+    std::cout << "Total Volume: " << testQuote.totalVolume << std::endl;
+
+    return 0;
+}
+```
+<details><summary>Click for output</summary>
+Symbol: AAPL<br>
+Last Price: 153.04<br>
+Last Size: 100<br>
+Bid Price: 153.03<br>
+Bid Size: 500<br>
+Ask Price: 153.03<br>
+Ask Size: 400<br>
+Total Volume: 58107288
+</details>
 
 ## TODO API Implementations
 
@@ -269,7 +420,7 @@ Volume: 110<br>
 - [X] Get Price History
 
 #### Quotes
-- [ ] Get Quote
+- [X] Get Quote
 - [ ] Get Quotes
 
 #### Transaction History
