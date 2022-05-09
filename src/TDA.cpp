@@ -67,12 +67,22 @@ void TDA::readConfig() {
 		if(configJSON.contains("access_token")) {
 			// check the date that it was created and see if it has expired
 			// access_tokens are only good for 30 minutes
-			
-			if(checkAccessExpire()) {
+			// if for some reason the access token creation date gets deleted or doesn't exist, 
+			// then make a new access token
+				
+
+			if(!(configJSON.contains("access_create_date"))) {
 				createAccessToken();
 				saveConfig();
 				readConfig();
+			}else {
+				if(checkAccessExpire()) {
+					createAccessToken();
+					saveConfig();
+					readConfig();
+				}
 			}
+		
 
 			// get the client id from environ variable
 			if(!(configJSON.contains("client_id"))) {
@@ -107,6 +117,8 @@ bool TDA::checkAccessExpire() {
 
 void TDA::sendReq(){
 	std::cout << "Initializing curl" << std::endl;
+
+	resResults = "";
 
 	curl = curl_easy_init();
 
@@ -214,8 +226,6 @@ void TDA::createAccessToken(bool refresh) {
 
 	// parse the request results into JSON object
 	nlohmann::json resJSON = nlohmann::json::parse(resResults);
-
-	std::cout << resJSON.dump() << std::endl;
 
 	if(resJSON.contains("access_token")) {
 		// store the access token in configJSON
@@ -337,6 +347,8 @@ Quote TDA::getQuote(std::string symbol) {
 		reqUrl = "https://api.tdameritrade.com/v1/marketdata/" + symbol + "/quotes";
 
 		sendReq();
+
+		std::cout << resResults << std::endl;
 
 		nlohmann::json resJSON = nlohmann::json::parse(resResults);
 
