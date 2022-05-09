@@ -25,7 +25,16 @@ int main() {
 		std::cout << "---------------------------------" << std::endl;
 	}*/
 
-	testTda.getQuote(ticker);
+	Quote testQuote = testTda.getQuote(ticker);
+
+	std::cout << "Symbol: " << testQuote.symbol << std::endl;
+	std::cout << "Last Price: " << testQuote.lastPrice << std::endl;
+	std::cout << "Last Size: " << testQuote.lastSize << std::endl;
+	std::cout << "Bid Price: " << testQuote.bidPrice << std::endl;
+	std::cout << "Bid Size: " << testQuote.bidSize << std::endl;
+	std::cout << "Ask Price: " << testQuote.bidPrice << std::endl;
+	std::cout << "Ask Size: " << testQuote.askSize << std::endl;
+	std::cout << "Total Volume: " << testQuote.totalVolume << std::endl;
 
 	return 0;
 }
