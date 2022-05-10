@@ -1,6 +1,6 @@
 # TDACPP
 
-A class for interacting with TD Ameritrades API
+A C++ class for interacting with TD Ameritrades API
 
 ## Table of Contents
 <a href="#getting-started">Getting Started</a><br>
