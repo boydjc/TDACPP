@@ -152,7 +152,7 @@ Corresonds to <a href="https://developer.tdameritrade.com/price-history/apis/get
 	<i>true to return extended hours data, false for regular market hours only. Default is true</i>
 </details>
 
-The Candle struct has the following attribues:
+The Candle struct has the following attributes:
 
 ```C++
 struct Candle {
@@ -286,6 +286,16 @@ struct Quote {
 ```
 </details>
 
+```C++
+std::vector<Quote> getQuotes(std::string symbols);
+```
+
+Corresponds to <a href="https://developer.tdameritrade.com/quotes/apis/get/marketdata/quotes">Get Quotes</a>
+
+Similar to getQuote() but can be used with multiple tickers. Tickers must be delimited by ','.
+
+<a href="#getQuotesEx">EXAMPLE</a>
+
 ## Examples
 
 <strong id="histPriceEx">Getting Price History</strong>
@@ -356,7 +366,7 @@ int main() {
     
     TDA testTDA;
     
-    Quote histPriceData = testTDA.getQuote("AAPL");
+    Quote testQuote = testTDA.getQuote("AAPL");
     
     std::cout << "Symbol: " << testQuote.symbol << std::endl;
     std::cout << "Last Price: " << testQuote.lastPrice << std::endl;
@@ -379,6 +389,62 @@ Bid Size: 500<br>
 Ask Price: 153.03<br>
 Ask Size: 400<br>
 Total Volume: 58107288
+</details>
+
+<strong id="getQuotesEx">Getting Multiple Quotes</strong>
+
+```C++
+#include "../include/TDA.h"
+
+int main() {
+    
+    TDA testTDA;
+    
+    std::vector<Quote> testQuotes = testTDA.getQuotes("AAPL,TSLA,FB");
+    
+    for(int i=0; i<testQuotes.size(); i++) {
+        std::cout << "Symbol: " << testQuotes[i].symbol << std::endl;  
+	std::cout << "Last Price: " << testQuotes[i].lastPrice << std::endl;
+	std::cout << "Last Size: " << testQuotes[i].lastSize << std::endl;
+        std::cout << "Bid Price: " << testQuotes[i].bidPrice << std::endl;
+	std::cout << "Bid Size: " << testQuotes[i].bidSize << std::endl;
+	std::cout << "Ask Price: " << testQuotes[i].bidPrice << std::endl;
+	std::cout << "Ask Size: " << testQuotes[i].askSize << std::endl;
+	std::cout << "Total Volume: " << testQuotes[i].totalVolume << std::endl;
+	std::cout << "--------------------------------" << std::endl;
+    }
+    return 0;
+}
+```
+
+<details><summary>Click for output</summary>
+Symbol: AAPL<br>
+Last Price: 155.93<br>
+Last Size: 100<br>
+Bid Price: 155.91<br>
+Bid Size: 200<br>
+Ask Price: 155.91<br>
+Ask Size: 300<br>
+Total Volume: 80752360<br>
+--------------------------------<br>
+Symbol: TSLA<br>
+Last Price: 803.395<br>
+Last Size: 100<br>
+Bid Price: 803.05<br>
+Bid Size: 100<br>
+Ask Price: 803.05<br>
+Ask Size: 200<br>
+Total Volume: 22499769<br>
+--------------------------------<br>
+Symbol: FB<br>
+Last Price: 200.305<br>
+Last Size: 300<br>
+Bid Price: 200.29<br>
+Bid Size: 300<br>
+Ask Price: 200.29<br>
+Ask Size: 100<br>
+Total Volume: 24370245<br>
+--------------------------------
 </details>
 
 ## TODO API Implementations
@@ -425,7 +491,7 @@ Total Volume: 58107288
 
 #### Quotes
 - [X] Get Quote
-- [ ] Get Quotes
+- [X] Get Quotes
 
 #### Transaction History
 - [ ] Get Transaction
