@@ -192,6 +192,7 @@ class TDA {
 					  	  unsigned int startDate=0, bool extHourData=true);
 
 		Quote getQuote(std::string symbol);
+		std::vector<Quote> getQuotes(std::string symbols);
 
 		/* END set & get functions */
 
@@ -215,6 +216,7 @@ class TDA {
 		int64_t refreshTokenCreationDate;
 
 		std::vector<Candle> histPriceData;
+		std::vector<Quote> quotes;
 
 		void readConfig();
 		void saveConfig();
@@ -222,5 +224,7 @@ class TDA {
 		static size_t saveLibCurlRes(void *buffer, size_t size, size_t nmemb, std::string *s);
 		void createAccessToken(bool refresh=false);
 		bool checkAccessExpire();
+
+		Quote createQuote(nlohmann::json quoteJSON);
 		
 };
