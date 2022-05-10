@@ -286,6 +286,8 @@ struct Quote {
 ```
 </details>
 
+<strong>Getting Multiple Quotes</strong>
+
 ```C++
 std::vector<Quote> getQuotes(std::string symbols);
 ```
