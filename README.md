@@ -5,7 +5,8 @@ A C++ class for interacting with TD Ameritrades API
 ## Table of Contents
 <a href="#getting-started">Getting Started</a><br>
 <a href="#how-to-use">How to use</a><br>
-<a href="#todo-api-implementations">TODO API Implementations</a>
+<a href="#todo-api-implementations">TODO API Implementations</a><br>
+<a href="#dependencies">Dependencies</a>
 
 ## Getting Started
 
@@ -517,6 +518,12 @@ Total Volume: 24370245<br>
 - [ ] Replace Watchlist
 - [ ] Update WatchList
 </details>
-   
+  
+## Dependencies
+
+<strong><a href="https://github.com/nlohmann/json">JSON for Modern C++</a></strong>
+
+<strong><a href="https://github.com/curl/curl">CURL</a></strong>
+- You will need to have curl installed on your system so the makefile can use the -lcurl flag
 
 
