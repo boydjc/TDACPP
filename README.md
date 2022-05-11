@@ -524,6 +524,5 @@ Total Volume: 24370245<br>
 <strong><a href="https://github.com/nlohmann/json">JSON for Modern C++</a></strong>
 
 <strong><a href="https://github.com/curl/curl">CURL</a></strong>
-- You will need to have curl installed on your system if you use the makefile so it can use the -lcurl flag
 
 
