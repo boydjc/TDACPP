@@ -90,6 +90,9 @@ struct Quote {
 	int regularMarketLastSize = 0;
 	long tradeTimeInLong = 0;
 	long quoteTimeInLong = 0;
+	long bidSizeInLong = 0;
+	long lastSizeInLong = 0;
+	long askSizeInLong = 0;
 	long regularMarketTradeTimeInLong = 0;
 	double bidPriceInDouble = 0.00;
 	double askPriceInDouble = 0.00;
