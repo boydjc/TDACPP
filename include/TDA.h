@@ -2,7 +2,7 @@
 
 #include <curl/curl.h>
 
-#include "../include/json.hpp"
+#include "../../libs/json/json.hpp"
 
 struct Candle {
 	std::string date;
