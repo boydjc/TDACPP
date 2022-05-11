@@ -124,50 +124,55 @@ void TDA::sendReq(){
 	curl = curl_easy_init();
 
 	if(curl) {
-		//std::cout << "Setting url opt" << std::endl;
-		//std::cout << reqUrl << std::endl;
-		curl_easy_setopt(curl, CURLOPT_URL, reqUrl.c_str());	
-		
-		/* Setting post fields if we are doing a post request */
-		if(postData != "") {
-			/* Setting Headers */
-			struct curl_slist *headers=NULL;
+		try {
+			//std::cout << "Setting url opt" << std::endl;
+			//std::cout << reqUrl << std::endl;
+			curl_easy_setopt(curl, CURLOPT_URL, reqUrl.c_str());	
+			
+			/* Setting post fields if we are doing a post request */
+			if(postData != "") {
+				/* Setting Headers */
+				struct curl_slist *headers=NULL;
 
-			headers = curl_slist_append(headers, "Accept-Encoding: gzip");
-			headers = curl_slist_append(headers, "Accept-Language: en-US");
-			headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded");
-			curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-			//std::cout << "Setting post fields" << std::endl;
-			curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postData.c_str());
-		}else {
-			// set bearer token
-			//std::cout << "SETTING BEARER" << std::endl;
-			struct curl_slist *headers=NULL;
-			headers = curl_slist_append(headers, ("Authorization: Bearer " + configJSON["access_token"].get<std::string>()).c_str());
-			curl_easy_setopt(curl, CURLOPT_XOAUTH2_BEARER, configJSON["access_token"].get<std::string>().c_str());
-			curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+				headers = curl_slist_append(headers, "Accept-Encoding: gzip");
+				headers = curl_slist_append(headers, "Accept-Language: en-US");
+				headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded");
+				curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+				//std::cout << "Setting post fields" << std::endl;
+				curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postData.c_str());
+			}else {
+				// set bearer token
+				//std::cout << "SETTING BEARER" << std::endl;
+				struct curl_slist *headers=NULL;
+				headers = curl_slist_append(headers, ("Authorization: Bearer " + configJSON["access_token"].get<std::string>()).c_str());
+				curl_easy_setopt(curl, CURLOPT_XOAUTH2_BEARER, configJSON["access_token"].get<std::string>().c_str());
+				curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+			}
+
+			//std::cout << "Setting callback function" << std::endl;
+			curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, TDA::saveLibCurlRes);
+			//std::cout << "Setting callback variable" << std::endl;
+			curl_easy_setopt(curl, CURLOPT_WRITEDATA, &resResults);
+
+			// for debugging
+			//curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
+			
+			/* Perform the request, res will get the return code */
+			//std::cout << "Performing request" << std::endl;
+			res = curl_easy_perform(curl);
+
+			/* Check for errors */
+			if(res != CURLE_OK) {
+				fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+			}
+
+			/* always clean up */
+			//std::cout << "Cleaning up" << std::endl;
+			curl_easy_cleanup(curl);
+		} catch(...) {
+			std::cout << "Error with CURL request" << std::endl;
+			curl_easy_cleanup(curl);
 		}
-
-		//std::cout << "Setting callback function" << std::endl;
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, TDA::saveLibCurlRes);
-		//std::cout << "Setting callback variable" << std::endl;
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &resResults);
-
-		// for debugging
-		//curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
-		
-		/* Perform the request, res will get the return code */
-		//std::cout << "Performing request" << std::endl;
-		res = curl_easy_perform(curl);
-
-		/* Check for errors */
-		if(res != CURLE_OK) {
-			fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
-		}
-
-		/* always clean up */
-		//std::cout << "Cleaning up" << std::endl;
-		curl_easy_cleanup(curl);
 	}
 }
 
