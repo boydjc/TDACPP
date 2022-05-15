@@ -4,9 +4,9 @@
 #include <chrono>
 #include <time.h>
 #include <stdlib.h>
-#include <sstream>
+#include <typeinfo>
 
-#include "../include/TDA.h"
+#include "TDA.h"
 
 TDA::TDA() {	
 	std::cout << "TDA!" << std::endl;
@@ -33,7 +33,7 @@ void TDA::readConfig() {
 	// get the refresh token from environ variable
 	if(!(configJSON.contains("refresh_token"))){
 		std::cout << "ERROR! Could not find refresh token." << std::endl;
-		std::cout << "Please make sure your refresh token is in your config.json file!" << std::endl;
+		std::cout << "Please make sure your refresh token is in your tda-config.json file!" << std::endl;
 	}
 	/* if we have a refresh token but no creation date, then we can assume that this is the baseline 
 	/ refresh token that the user created when first using this class
@@ -88,7 +88,12 @@ void TDA::readConfig() {
 			// get the client id from environ variable
 			if(!(configJSON.contains("client_id"))) {
 				std::cout << "ERROR! Could not find client id." << std::endl;
-				std::cout << "Please make sure your client id is in your config.json file!" << std::endl;
+				std::cout << "Please make sure your client id is in your tda-config.json file!" << std::endl;
+			}
+
+			if(!(configJSON.contains("account_id"))) {
+				std::cout << "ERROR! Could not find account id." << std::endl;
+				std::cout << "Please make sure your account id is in your tda-config.json file!" << std::endl;
 			}
 
 		}else if(!(configJSON.contains("access_token"))) {
@@ -130,7 +135,7 @@ void TDA::sendReq(){
 			curl_easy_setopt(curl, CURLOPT_URL, reqUrl.c_str());	
 			
 			/* Setting post fields if we are doing a post request */
-			if(postData != "") {
+			if(postDataStr != "" && postDataJSON.empty()) {
 				/* Setting Headers */
 				struct curl_slist *headers=NULL;
 
@@ -139,7 +144,16 @@ void TDA::sendReq(){
 				headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded");
 				curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 				//std::cout << "Setting post fields" << std::endl;
-				curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postData.c_str());
+				curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postDataStr.c_str());
+			} else if(postDataStr == "" && !(postDataJSON.empty())) {
+				// if we have a json then we are probably trying to send an order
+				postDataJSON.dump();
+				curl_easy_setopt(curl, CURLOPT_POST, 1L);
+				struct curl_slist *headers=NULL;
+				headers = curl_slist_append(headers, "Content-Type: application/json");
+				headers = curl_slist_append(headers, ("Authorization: Bearer " + configJSON["access_token"].get<std::string>()).c_str());
+				curl_easy_setopt(curl, CURLOPT_XOAUTH2_BEARER, configJSON["access_token"].get<std::string>().c_str());
+				curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 			}else {
 				// set bearer token
 				//std::cout << "SETTING BEARER" << std::endl;
@@ -214,12 +228,12 @@ void TDA::createAccessToken(bool refresh) {
 												 configJSON["refresh_token"].get<std::string>().length());
 	
 	if(refresh){
-		postData = "grant_type=refresh_token&refresh_token=" +
+		postDataStr = "grant_type=refresh_token&refresh_token=" +
 											   refreshEncode +
 											   "&access_type=offline&code=&client_id=" + 
 											   configJSON["client_id"].get<std::string>() + "&redirect_url=";
 	}else{
-		postData = "grant_type=refresh_token&refresh_token=" + 
+		postDataStr = "grant_type=refresh_token&refresh_token=" + 
 											   refreshEncode + 
 											   "&access_type=&code=&client_id=" + 
 											   configJSON["client_id"].get<std::string>() + "&redirect_uri=";
@@ -230,7 +244,7 @@ void TDA::createAccessToken(bool refresh) {
 	sendReq();
 	
 	// clear the post data
-	postData = "";
+	postDataStr = "";
 
 	// parse the request results into JSON object
 	nlohmann::json resJSON = nlohmann::json::parse(resResults);
@@ -429,61 +443,61 @@ Quote TDA::createQuote(nlohmann::json quoteJSON) {
 	Quote newQuote;
 
 	//std::cout << "Setting Symbol" << std::endl;
-	newQuote.symbol = quoteJSON.contains("symbol") ? quoteJSON["symbol"].get<std::string>() : "";
+	newQuote.symbol = quoteJSON.contains("symbol") ? quoteJSON["symbol"].get<std::string>() : "None";
 	//std::cout << "Setting assetMainType" << std::endl;
-	newQuote.assetMainType = quoteJSON.contains("assetMainType") ? quoteJSON["assetMainType"].get<std::string>() : "";
+	newQuote.assetMainType = quoteJSON.contains("assetMainType") ? quoteJSON["assetMainType"].get<std::string>() : "None";
 	//std::cout << "Setting assetSubType" << std::endl;
-	newQuote.assetSubType = quoteJSON.contains("assetSubType") ? quoteJSON["assetSubType"].get<std::string>() : "";
+	newQuote.assetSubType = quoteJSON.contains("assetSubType") ? quoteJSON["assetSubType"].get<std::string>() : "None";
 	//std::cout << "Setting assetType" << std::endl;
-	newQuote.assetType = quoteJSON.contains("assetType") ? quoteJSON["assetType"].get<std::string>() : "";
+	newQuote.assetType = quoteJSON.contains("assetType") ? quoteJSON["assetType"].get<std::string>() : "None";
 	//std::cout << "Setting exchange" << std::endl;
-	newQuote.exchange = quoteJSON.contains("exchange") ? quoteJSON["exchange"].get<std::string>() : "";
+	newQuote.exchange = quoteJSON.contains("exchange") ? quoteJSON["exchange"].get<std::string>() : "None";
 	//std::cout << "Setting exchangeName" << std::endl;
-	newQuote.exchangeName = quoteJSON.contains("exchangeName") ? quoteJSON["exchangeName"].get<std::string>() : "";
+	newQuote.exchangeName = quoteJSON.contains("exchangeName") ? quoteJSON["exchangeName"].get<std::string>() : "None";
 	//std::cout << "Setting divDate" << std::endl;
-	newQuote.divDate = quoteJSON.contains("divDate") ? quoteJSON["divDate"].get<std::string>() : "";
+	newQuote.divDate = quoteJSON.contains("divDate") ? quoteJSON["divDate"].get<std::string>() : "None";
 	//std::cout << "Setting securityStatus" << std::endl;
-	newQuote.securityStatus = quoteJSON.contains("securityStatus") ? quoteJSON["securityStatus"].get<std::string>() : "";
+	newQuote.securityStatus = quoteJSON.contains("securityStatus") ? quoteJSON["securityStatus"].get<std::string>() : "None";
 	//std::cout << "Setting bidId" << std::endl;
-	newQuote.bidId = quoteJSON.contains("bidId") ? quoteJSON["bidId"].get<std::string>() : "";
+	newQuote.bidId = quoteJSON.contains("bidId") ? quoteJSON["bidId"].get<std::string>() : "None";
 	//std::cout << "Setting askId" << std::endl;
-	newQuote.askId = quoteJSON.contains("askId") ? quoteJSON["askId"].get<std::string>() : "";
+	newQuote.askId = quoteJSON.contains("askId") ? quoteJSON["askId"].get<std::string>() : "None";
 	//std::cout << "Setting description" << std::endl;
-	newQuote.description = quoteJSON.contains("description") ? quoteJSON["description"].get<std::string>() : "";
+	newQuote.description = quoteJSON.contains("description") ? quoteJSON["description"].get<std::string>() : "None";
 	//std::cout << "Setting lastId" << std::endl;
-	newQuote.lastId = quoteJSON.contains("lastId") ? quoteJSON["lastId"].get<std::string>() : "";
+	newQuote.lastId = quoteJSON.contains("lastId") ? quoteJSON["lastId"].get<std::string>() : "None";
 	//std::cout << "Setting product" << std::endl;
-	newQuote.product = quoteJSON.contains("product") ? quoteJSON["product"].get<std::string>() : "";
+	newQuote.product = quoteJSON.contains("product") ? quoteJSON["product"].get<std::string>() : "None";
 	//std::cout << "Setting futurePriceFormat" << std::endl;
-	newQuote.futurePriceFormat = quoteJSON.contains("futurePriceFormat") ? quoteJSON["futurePriceFormat"].get<std::string>() : "";
+	newQuote.futurePriceFormat = quoteJSON.contains("futurePriceFormat") ? quoteJSON["futurePriceFormat"].get<std::string>() : "None";
 	//std::cout << "Setting futureTradingHours" << std::endl;
-	newQuote.futureTradingHours = quoteJSON.contains("futureTradingHours") ? quoteJSON["futureTradingHours"].get<std::string>() : "";
+	newQuote.futureTradingHours = quoteJSON.contains("futureTradingHours") ? quoteJSON["futureTradingHours"].get<std::string>() : "None";
 	//std::cout << "Setting futureActiveSymbol" << std::endl;
-	newQuote.futureActiveSymbol = quoteJSON.contains("futureActiveSymbol") ? quoteJSON["futureActiveSymbol"].get<std::string>() : "";
+	newQuote.futureActiveSymbol = quoteJSON.contains("futureActiveSymbol") ? quoteJSON["futureActiveSymbol"].get<std::string>() : "None";
 	//std::cout << "Setting futureExpirationDate" << std::endl;
-	newQuote.futureExpirationDate = quoteJSON.contains("futureExpirationDate") ? quoteJSON["futureExpirationDate"].get<std::string>() : "";
+	newQuote.futureExpirationDate = quoteJSON.contains("futureExpirationDate") ? quoteJSON["futureExpirationDate"].get<std::string>() : "None";
 	//std::cout << "Setting contractType" << std::endl;
-	newQuote.contractType = quoteJSON.contains("contractType") ? quoteJSON["contractType"].get<std::string>() : "";
+	newQuote.contractType = quoteJSON.contains("contractType") ? quoteJSON["contractType"].get<std::string>() : "None";
 	//std::cout << "Settin underlying" << std::endl;
-	newQuote.underlying = quoteJSON.contains("underlying") ? quoteJSON["underlying"].get<std::string>() : "";
+	newQuote.underlying = quoteJSON.contains("underlying") ? quoteJSON["underlying"].get<std::string>() : "None";
 	//std::cout << "Setting expirationType" << std::endl;
-	newQuote.expirationType = quoteJSON.contains("expirationType") ? quoteJSON["expirationType"].get<std::string>() : "";
+	newQuote.expirationType = quoteJSON.contains("expirationType") ? quoteJSON["expirationType"].get<std::string>() : "None";
 	//std::cout << "Setting exerciseType" << std::endl;
-	newQuote.exerciseType = quoteJSON.contains("exerciseType") ? quoteJSON["exerciseType"].get<std::string>() : "";
+	newQuote.exerciseType = quoteJSON.contains("exerciseType") ? quoteJSON["exerciseType"].get<std::string>() : "None";
 	//std::cout << "Setting deliverables" << std::endl;
-	newQuote.deliverables = quoteJSON.contains("deliverables") ? quoteJSON["deliverables"].get<std::string>() : "";
+	newQuote.deliverables = quoteJSON.contains("deliverables") ? quoteJSON["deliverables"].get<std::string>() : "None";
 	//std::cout << "Setting uvExpirationType" << std::endl;
-	newQuote.uvExpirationType = quoteJSON.contains("uvExpirationType") ? quoteJSON["uvExpirationType"].get<std::string>() : "";
+	newQuote.uvExpirationType = quoteJSON.contains("uvExpirationType") ? quoteJSON["uvExpirationType"].get<std::string>() : "None";
 	//std::cout << "Setting settlementType" << std::endl;
-	newQuote.settlementType = quoteJSON.contains("settlementType") ? quoteJSON["settlementType"].get<std::string>() : "";
+	newQuote.settlementType = quoteJSON.contains("settlementType") ? quoteJSON["settlementType"].get<std::string>() : "None";
 	//std::cout << "Setting tradingHours" << std::endl;
-	newQuote.tradingHours = quoteJSON.contains("tradingHours") ? quoteJSON["tradingHours"].get<std::string>() : "";
+	newQuote.tradingHours = quoteJSON.contains("tradingHours") ? quoteJSON["tradingHours"].get<std::string>() : "None";
 	//std::cout << "Setting marketMaker" << std::endl;
-	newQuote.marketMaker = quoteJSON.contains("marketMaker") ? quoteJSON["marketMaker"].get<std::string>() : "";
+	newQuote.marketMaker = quoteJSON.contains("marketMaker") ? quoteJSON["marketMaker"].get<std::string>() : "None";
 	//std::cout << "Setting cusip" << std::endl;
 	if(quoteJSON["assetMainType"] != "FOREX") {
 		// this is because cusip is null for FOREX
-		newQuote.cusip = quoteJSON.contains("cusip") ? quoteJSON["cusip"].get<std::string>() : "";
+		newQuote.cusip = quoteJSON.contains("cusip") ? quoteJSON["cusip"].get<std::string>() : "None";
 	}
 	//std::cout << "Setting lastPrice" << std::endl;
 	newQuote.lastPrice = quoteJSON.contains("lastPrice") ? quoteJSON["lastPrice"].get<float>() : 0.00;
@@ -651,4 +665,36 @@ Quote TDA::createQuote(nlohmann::json quoteJSON) {
 	newQuote.delayed = quoteJSON.contains("delayed") ? quoteJSON["delayed"].get<bool>() : false;
 
 	return newQuote;
+}
+
+
+void TDA::placeOrder(std::string orderDetails) {
+
+
+
+	reqUrl = "https://api.tdameritrade.com/v1/accounts/" + std::to_string(configJSON["account_id"].get<int>()) + "/orders";
+
+	postDataJSON = {
+		{"orderType", "MARKET"},
+		{"session", "NORMAL"},
+		{"duration", "DAY"}, 
+		{"orderStrategyType", "SINGLE"},
+		{"orderLegCollection", 
+			{ 
+				{"instruction", "Buy"},
+				{"quantity", 1},
+				{"instrument", 
+					{
+						{"symbol", "ACB"},
+						{"assetType", "EQUITY"}
+					}
+				}
+			}
+		}
+	};
+
+	sendReq();
+
+	// always clear the post json data after using
+	postDataJSON.clear();
 }
