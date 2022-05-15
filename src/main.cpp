@@ -1,7 +1,7 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
-#include "../include/TDA.h"
+#include "TDA.h"
 
 int main() {
 
@@ -11,6 +11,7 @@ int main() {
 	std::cout << "1. Get Historical Price" << std:: endl;
 	std::cout << "2. Get Quote " << std::endl;
 	std::cout << "3. Get Quotes " << std::endl;
+	std::cout << "4. Place Order" << std::endl;
 
 	std::string userChoice;
 	std::cout << ": ";
@@ -50,6 +51,7 @@ int main() {
 
 		Quote testQuote = testTda.getQuote(ticker);
 
+		std::cout << "Quote-Time: " << testQuote.quoteTimeInLong << std::endl;
 		std::cout << "Symbol: " << testQuote.symbol << std::endl;
 		std::cout << "Last Price: " << testQuote.lastPrice << std::endl;
 		std::cout << "Last Size: " << testQuote.lastSize << std::endl;
@@ -90,6 +92,8 @@ int main() {
 				std::cout << "--------------------------------" << std::endl;
 			}
 		}
-	} 
+	} else if(userChoice == "4") {
+		testTda.placeOrder();
+	}
 	return 0;
 }

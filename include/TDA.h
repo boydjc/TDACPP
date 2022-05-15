@@ -17,33 +17,33 @@ struct Candle {
 /* Not all of these will be used at once. It depends on the type of security 
 	that you are getting the quote for */
 struct Quote {
-	std::string symbol = "";
-	std::string assetMainType = "";
-	std::string assetSubType = "";
-	std::string assetType = "";
-	std::string exchange = "";
-	std::string exchangeName = "";
-	std::string divDate = "";
-	std::string securityStatus = "";
-	std::string bidId = "";
-	std::string askId = "";
-	std::string description = "";
-	std::string lastId = "";
-	std::string product = "";
-	std::string futurePriceFormat = "";
-	std::string futureTradingHours = "";
-	std::string futureActiveSymbol = "";
-	std::string futureExpirationDate = "";
-	std::string contractType = "";
-	std::string underlying = "";
-	std::string expirationType = "";
-	std::string exerciseType = "";
-	std::string deliverables = "";
-	std::string uvExpirationType = "";
-	std::string settlementType = "";
-	std::string tradingHours = "";
-	std::string marketMaker = "";
-	std::string cusip = "";
+	std::string symbol = "None";
+	std::string assetMainType = "None";
+	std::string assetSubType = "None";
+	std::string assetType = "None";
+	std::string exchange = "None";
+	std::string exchangeName = "None";
+	std::string divDate = "None";
+	std::string securityStatus = "None";
+	std::string bidId = "None";
+	std::string askId = "None";
+	std::string description = "None";
+	std::string lastId = "None";
+	std::string product = "None";
+	std::string futurePriceFormat = "None";
+	std::string futureTradingHours = "None";
+	std::string futureActiveSymbol = "None";
+	std::string futureExpirationDate = "None";
+	std::string contractType = "None";
+	std::string underlying = "None";
+	std::string expirationType = "None";
+	std::string exerciseType = "None";
+	std::string deliverables = "None";
+	std::string uvExpirationType = "None";
+	std::string settlementType = "None";
+	std::string tradingHours = "None";
+	std::string marketMaker = "None";
+	std::string cusip = "None";
 	float lastPrice = 0.00;
 	float openPrice = 0.00;
 	float highPrice = 0.00;
@@ -143,61 +143,76 @@ class TDA {
 
 			params:
 
-			ticker - ticker symbol of company
+				ticker - ticker symbol of company
 
-			periodType - The type of period to show. Valid values are day, month, year, or ytd (year to date). 
+				periodType - The type of period to show. Valid values are day, month, year, or ytd (year to date). 
 						 Default is day.
 
-			period - The number of periods to show.
+				period - The number of periods to show.
 
-					 Example: For a 2 day / 1 min chart, the values would be:
+						 Example: For a 2 day / 1 min chart, the values would be:
 
-					 period: 2
-					 periodType: day
-					 frequency: 1
-					 frequencyType: min
+						 period: 2
+						 periodType: day
+						 frequency: 1
+						 frequencyType: min
+	
+						 Valid periods by periodType (defaults marked with an asterisk):
 
-					 Valid periods by periodType (defaults marked with an asterisk):
+						 day: 1, 2, 3, 4, 5, 10*
+						 month: 1*, 2, 3, 6
+						 year: 1*, 2, 3, 5, 10, 15, 20
+						 ytd: 1*
 
-					 day: 1, 2, 3, 4, 5, 10*
-					 month: 1*, 2, 3, 6
-					 year: 1*, 2, 3, 5, 10, 15, 20
-					 ytd: 1*
+				freqType - The type of frequency with which a new candle is formed.
 
-			freqType - The type of frequency with which a new candle is formed.
+						   Valid frequencyTypes by periodType (defaults marked with an asterisk):
 
-					   Valid frequencyTypes by periodType (defaults marked with an asterisk):
+						   day: minute*
+						   month: daily, weekly*
+						   year: daily, weekly, monthly*
+						   ytd: daily, weekly*
 
-					   day: minute*
-					   month: daily, weekly*
-					   year: daily, weekly, monthly*
-					   ytd: daily, weekly*
+				freq - The number of the frequencyType to be included in each candle.
 
-			freq - The number of the frequencyType to be included in each candle.
+					   Valid frequencies by frequencyType (defaults marked with an asterisk):
 
-				   Valid frequencies by frequencyType (defaults marked with an asterisk):
+					   minute: 1*, 5, 10, 15, 30
+					   daily: 1*
+					   weekly: 1*
+					   monthly: 1*
 
-				   minute: 1*, 5, 10, 15, 30
-				   daily: 1*
-				   weekly: 1*
-				   monthly: 1*
+				endDate - End date as milliseconds since epoch. If startDate and endDate are provided, period should not be provided. 
+						  Default is previous trading day.
 
-			endDate - End date as milliseconds since epoch. If startDate and endDate are provided, period should not be provided. 
-					  Default is previous trading day.
+				startDate - Start date as milliseconds since epoch. If startDate and endDate are provided, period should not be provided.
 
-			startDate - Start date as milliseconds since epoch. If startDate and endDate are provided, period should not be provided.
-
-			extHourData - true to return extended hours data, false for regular market hours only. Default is true */
+				extHourData - true to return extended hours data, false for regular market hours only. Default is true */
 
 		std::vector<Candle> getHistPrice(std::string ticker, std::string periodType="day",
 					  	  std::string period="", std::string freqType="",
 					  	  std::string freq="", unsigned int endDate=0,
 					  	  unsigned int startDate=0, bool extHourData=true);
 
+		/* getQuote() and getQuotes()
+			Get data quotes for single or multiple tickers
+
+			params: 
+
+				symbol - a single ticker symbol used with getQuote
+
+				symbols - multiple quotes separated by a comman (AAPL,TSLA,FB)
+				
+			you can use getQuotes to get FOREX data by using slash instead of comma for the delimiter. 
+			Example: EUR/USD
+
+		*/
 		Quote getQuote(std::string symbol);
 		std::vector<Quote> getQuotes(std::string symbols);
 
 		/* END set & get functions */
+		void placeOrder(std::string orderDetails="");
+
 
 	private:
 		CURL *curl;
@@ -212,7 +227,8 @@ class TDA {
 		std::string resResults;
 
 		std::string reqUrl;
-		std::string postData;
+		std::string postDataStr="";
+		nlohmann::json postDataJSON = {};
 
 		// the unix time stamp for when the access token was created
 		int64_t accessTokenCreationDate;
