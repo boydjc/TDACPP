@@ -516,7 +516,7 @@ Quote TDA::createQuote(nlohmann::json quoteJSON) {
 	//std::cout << "Setting 52WkHigh" << std::endl;
 	newQuote.fiftyTwoWeekHigh = quoteJSON.contains("52WkHigh") ? quoteJSON["52WkHigh"].get<float>() : 0.00;
 	//std::cout << "setting 52WkLow" << std::endl;
-	newQuote.fiftyTwoWeekLow = quoteJSON.contains("52WkLow") ? quoteJSON["52WkHigh"].get<float>() : 0.00;
+	newQuote.fiftyTwoWeekLow = quoteJSON.contains("52WkLow") ? quoteJSON["52WkLow"].get<float>() : 0.00;
 	//std::cout << "Setting peRatio" << std::endl;
 	newQuote.peRatio = quoteJSON.contains("peRatio") ? quoteJSON["peRatio"].get<float>() : 0.00;
 	//std::cout << "Setting divAmount" << std::endl;
