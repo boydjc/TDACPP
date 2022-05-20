@@ -299,12 +299,12 @@ std::vector<Candle> TDA::getHistPrice(std::string ticker, std::string periodType
 
 		if(endDate != 0) {
 			std::cout << "End Date Present" << std::endl;
-			reqUrl.append("&endDate=" + endDate);
+			reqUrl.append("&endDate=" + std::to_string(endDate));
 		}
 
 		if(startDate != 0) {
 			std::cout << "Start date present" << std::endl;
-			reqUrl.append("&startDate=" + startDate);
+			reqUrl.append("&startDate=" + std::to_string(startDate));
 		}
 
 		if(extHourData) {
